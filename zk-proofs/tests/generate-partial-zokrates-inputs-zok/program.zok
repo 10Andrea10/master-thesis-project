@@ -1,0 +1,15 @@
+from "./../../src/lib/concatenator" import concatenateTwoArraysIn256;
+from "./../../src/lib/merkleTree" import  generateMerkleTree;
+
+
+const u32 TREE_DEPTH = 2;
+const u32 TRANSAC_NUM = 3;
+const u32 ACCOUNT_NUM = 4;
+
+def main(private u32[ACCOUNT_NUM] balances, private u32[ACCOUNT_NUM] nonces) -> u32[8] {
+    // verify that the balances + nonces inputed are the right ones
+    u32[ACCOUNT_NUM][8] balancesNonces = concatenateTwoArraysIn256(balances, nonces);
+    u32[8] generatedBalanceNonceRoot = generateMerkleTree(balancesNonces, TREE_DEPTH);
+    log("balance + nonces root generated {}", generatedBalanceNonceRoot);
+    return generatedBalanceNonceRoot;
+}

@@ -41,6 +41,12 @@ def calculate_tree_root(values: [bytearray]) -> bytearray:
 
     return byte32_to_u32_array8(h00)
 
+def concatenateTwoArraysIn256(array1: [str], array2: [str]) -> [bytearray]:
+    result = []
+    for i in range(0, len(array1) ):
+        result.append(sha256(str_to_bytes(array1[i], 16), str_to_bytes(array2[i], 16)))
+    return result
+
 if __name__ == "__main__":
 
     # taken from file `dev.env`
@@ -87,7 +93,7 @@ if __name__ == "__main__":
         "0x0",
     ]
 
-    balance_root = calculate_tree_root([str_to_bytes(x, 16) for x in balances])
+    # balance_root = calculate_tree_root([str_to_bytes(x, 16) for x in balances])
 
     nonces = [
         "0x1",
@@ -96,8 +102,11 @@ if __name__ == "__main__":
         "0x1",
     ]
 
-    nonces_root = calculate_tree_root([str_to_bytes(x, 16) for x in nonces])
+    # nonces_root = calculate_tree_root([str_to_bytes(x, 16) for x in nonces])
 
+    concatenatedBalancesNonces = concatenateTwoArraysIn256(balances, nonces)
+
+    concatenatedBalancesNoncesTreeRoot = calculate_tree_root(concatenatedBalancesNonces)
 
     transactions = [
         {
@@ -145,9 +154,10 @@ if __name__ == "__main__":
     obj = json.dumps([
         account_root,
         formatted_accounts,
-        balance_root,
+        #balance_root,
+        concatenatedBalancesNoncesTreeRoot,
         balances,
-        nonces_root,
+        # nonces_root,
         nonces,
         transactions,
         transaction_extras

@@ -10,12 +10,15 @@
 		"linux/amd64"
 	],
 	"customizations": {
+
 		"vscode": {
 			"extensions": [
 				"ms-python.python"
-			]
+			],
+			"extensions.verifySignature": false
 		}
 	},
+	
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
@@ -24,7 +27,8 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "pip install pytezos && sudo apt update && sudo apt install python3-nacl -y"
+	"postCreateCommand": "pip install pytezos && sudo apt update && sudo apt install python3-nacl -y",
+
 
 	// Configure tool-specific properties.
 	// "customizations": {},
