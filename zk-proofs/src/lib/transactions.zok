@@ -1,0 +1,74 @@
+// from "ecc/proofOfOwnership" import main as proofOfOwnership;
+// from "ecc/babyjubjubParams" import main as getContext, BabyJubJubParams;
+
+struct Transaction {
+	u64[8] signature;     // signed operation
+    u64[20] operation;    // raw bytes of transaction
+	u32 amount;
+    u32 nonce;
+}
+
+struct TransactionHelper {
+	u32[8] sourceAddress; // in tezos this are public keys instead of addresses
+    u32[8] targetAddress; // in tezos this are public keys instead of addresses
+    u32 sourceIndex;
+    u32 targetIndex;
+}
+
+def checkTransactions<N, M>(TransactionHelper[N] transactionExtras, u32[M][8] hashedAccounts) -> bool {
+    // BabyJubJubParams context = getContext();
+    
+    for u32 i in 0..N {
+        // Transaction transaction = transactions[i];
+        TransactionHelper transactionHelper = transactionExtras[i];
+
+        // check that sender and recipient address are in the list
+        assert(hashedAccounts[transactionHelper.sourceIndex] == transactionHelper.sourceAddress);
+        assert(hashedAccounts[transactionHelper.targetIndex] == transactionHelper.targetAddress);
+
+        // check correctness of signature
+        // bool correctTransaction = proofOfOwnership(transaction.sourceAddress, transaction.signature, context);
+        // assert(correctTransaction);
+    }
+
+    return true;
+}
+
+def checkNoncesTransactions<N, M>(u32[M] nonces, Transaction[N] transactions, TransactionHelper[N] transactionExtras) -> bool {
+
+    for u32 i in 0..N {
+        Transaction transaction = transactions[i];
+        TransactionHelper transactionHelper = transactionExtras[i];
+
+        // check that nonce is correct
+        assert(transaction.nonce == (nonces[transactionHelper.sourceIndex]) + 1);
+    }
+    return true;
+}
+
+def calculateNewBalances<N, M>(u32[M] balances, Transaction[N] transactions, TransactionHelper[N] transactionExtras) -> u32[M] {
+
+    u32[M] mut newBalances = balances;
+
+    for u32 i in 0..N {
+        Transaction transaction = transactions[i];
+        TransactionHelper transactionHelper = transactionExtras[i];
+        newBalances[transactionHelper.sourceIndex] = newBalances[transactionHelper.sourceIndex] - transaction.amount;
+        newBalances[transactionHelper.targetIndex] = newBalances[transactionHelper.targetIndex] + transaction.amount;
+    }
+
+    return newBalances;
+}
+
+def calculateNewNonces<N, M>(u32[M] nonces, Transaction[N] transactions, TransactionHelper[N] transactionExtras) -> u32[M] {
+
+    u32[M] mut newNonces = nonces;
+
+    for u32 i in 0..N {
+        Transaction transaction = transactions[i];
+        TransactionHelper transactionHelper = transactionExtras[i];
+        newNonces[transactionHelper.sourceIndex] = transactions[i].nonce;
+    }
+
+    return newNonces;
+}

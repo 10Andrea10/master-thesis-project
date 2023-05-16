@@ -1,0 +1,19 @@
+import "hashes/sha256/512bitPadded" as hash;
+
+def concatenateTwoArraysIn256<M>(u32[M] array1, u32[M] array2) -> u32[M][8] {
+    u32[M][8] mut unpackedArray1 = [[0, 0, 0, 0, 0, 0, 0, 0]; M];
+    for u32 i in 0..M {
+        unpackedArray1[i][7] = array1[i];
+    }
+    u32[M][8] mut unpackedArray2 = [[0, 0, 0, 0, 0, 0, 0, 0]; M];
+    for u32 i in 0..M {
+        unpackedArray2[i][7] = array2[i];
+    }
+
+    u32[M][8] mut concatenated = [[0, 0, 0, 0, 0, 0, 0, 0]; M];
+    for u32 i in 0..M {
+        concatenated[i] = hash(unpackedArray1[i], unpackedArray2[i]);
+    }
+
+    return concatenated;
+}
