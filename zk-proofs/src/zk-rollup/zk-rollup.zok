@@ -1,5 +1,5 @@
 from "./../lib/merkleTree" import merkleTreeProof, generateMerkleTree;
-from "./../lib/transactions" import checkTransactions, checkApplyNoncesTransactions ,calculateNewBalances, calculateNewNonces, Transaction, TransactionHelper;
+from "./../lib/transactions" import checkTransactions, checkApplyNoncesTransactions ,calculateNewBalancesAndNonces, Transaction, TransactionHelper;
 from "./../lib/concatenator" import concatenateTwoArraysIn256;
 
 const u32 TREE_DEPTH = 2;
@@ -24,17 +24,13 @@ def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8]hashedAccounts, u32[8] b
     log("accounts verified: {}", correctTransactions);
     assert(correctTransactions);
 
-    // iterate through each transaction and check that the nonces
-    u32[ACCOUNT_NUM] newNonces = checkApplyNoncesTransactions(nonces, transactions, transactionExtras);
-    //log("nonces verified");
+    // iterate through each transaction and update the balances and nonces of each account
+    u32[2][ACCOUNT_NUM] newBalancesAndNonces = calculateNewBalancesAndNonces(balances, nonces, transactions, transactionExtras);
 
-    // iterate through each transaction and update the balances of each account
-    u32[ACCOUNT_NUM] newBalances = calculateNewBalances(balances, transactions, transactionExtras);
-
-    u32[ACCOUNT_NUM][8] balancesNonces = concatenateTwoArraysIn256(newBalances, newNonces);
-    u32[8] balancesNoncesRoot = generateMerkleTree(balancesNonces, TREE_DEPTH);
+    u32[ACCOUNT_NUM][8] newBalancesNonces = concatenateTwoArraysIn256(newBalancesAndNonces[0], newBalancesAndNonces[1]);
+    u32[8] balancesNoncesRoot = generateMerkleTree(newBalancesNonces, TREE_DEPTH);
     log("new balance + nonces root generated {}", balancesNoncesRoot);
     
-    return (balancesNoncesRoot, newBalances, newNonces);
+    return (balancesNoncesRoot, newBalancesAndNonces[0], newBalancesAndNonces[1]);
 }
 

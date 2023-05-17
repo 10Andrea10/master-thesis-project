@@ -51,29 +51,28 @@ def checkApplyNoncesTransactions<N, M>(u32[M] nonces, Transaction[N] transaction
     return newNonces;
 }
 
-def calculateNewBalances<N, M>(u32[M] balances, Transaction[N] transactions, TransactionHelper[N] transactionExtras) -> u32[M] {
+def calculateNewBalancesAndNonces<N, M>(u32[M] balances, u32[M] nonces, Transaction[N] transactions, TransactionHelper[N] transactionExtras) -> u32[2][M] {
 
     u32[M] mut newBalances = balances;
-
-    for u32 i in 0..N {
-        Transaction transaction = transactions[i];
-        TransactionHelper transactionHelper = transactionExtras[i];
-        newBalances[transactionHelper.sourceIndex] = newBalances[transactionHelper.sourceIndex] - transaction.amount;
-        newBalances[transactionHelper.targetIndex] = newBalances[transactionHelper.targetIndex] + transaction.amount;
-    }
-
-    return newBalances;
-}
-
-def calculateNewNonces<N, M>(u32[M] nonces, Transaction[N] transactions, TransactionHelper[N] transactionExtras) -> u32[M] {
-
     u32[M] mut newNonces = nonces;
 
     for u32 i in 0..N {
         Transaction transaction = transactions[i];
         TransactionHelper transactionHelper = transactionExtras[i];
-        newNonces[transactionHelper.sourceIndex] = transactions[i].nonce;
+
+        // check that the sender balance is sufficient
+        assert(newBalances[transactionHelper.sourceIndex] >= transaction.amount);
+
+        // update balances
+        newBalances[transactionHelper.sourceIndex] = newBalances[transactionHelper.sourceIndex] - transaction.amount;
+        newBalances[transactionHelper.targetIndex] = newBalances[transactionHelper.targetIndex] + transaction.amount;
+
+        // check that nonce is the expected one
+        assert(transaction.nonce == (newNonces[transactionHelper.sourceIndex]) + 1);
+
+        // increment the nonce array
+        newNonces[transactionHelper.sourceIndex] = transaction.nonce;
     }
 
-    return newNonces;
+    return [newBalances, newNonces];
 }
