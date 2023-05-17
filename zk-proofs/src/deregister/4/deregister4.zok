@@ -1,0 +1,23 @@
+from "./../../lib/merkleTree" import merkleTreeProof, generateMerkleTree;
+
+const u32 TREE_DEPTH = 2;
+const u32 TRANSAC_NUM = 3;
+const u32 ACCOUNT_NUM = 4;
+
+// TODO: add nonces and balances
+def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8] hashedAccounts, private u32 position) -> u32[8] {
+
+    // verify that the accounts are the right ones
+    u32[8] generatedOldAccountRoot = generateMerkleTree(hashedAccounts, TREE_DEPTH);
+    assert(accountRoot == generatedOldAccountRoot);
+    log("account root generated {}", generatedOldAccountRoot);
+
+    u32[ACCOUNT_NUM][8] mut newHashedAccounts = hashedAccounts;
+    u32[8] emptyAccount = [0; 8];
+    newHashedAccounts[position] = emptyAccount;
+
+    u32[8] newAccountRoot = generateMerkleTree(newHashedAccounts, TREE_DEPTH);
+    log("new account root {}", newAccountRoot);
+
+    return newAccountRoot;
+}

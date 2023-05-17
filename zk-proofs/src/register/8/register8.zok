@@ -2,4 +2,4 @@ const u32 TREE_DEPTH = 2;
 const u32 TRANSAC_NUM = 3;
 const u32 ACCOUNT_NUM = 4;
 
-def main() ->
+def main() -> {}
