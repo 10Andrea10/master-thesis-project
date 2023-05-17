@@ -96,7 +96,7 @@ if __name__ == "__main__":
     # balance_root = calculate_tree_root([str_to_bytes(x, 16) for x in balances])
 
     nonces = [
-        "0x1",
+        "0x2",
         "0x1",
         "0x1",
         "0x1",
@@ -113,7 +113,7 @@ if __name__ == "__main__":
             "signature": transaction_signatures[0]['signature'],
             "operation": transaction_signatures[0]['operation'],
 	        "amount": "0x3E8", # 1000
-            "nonce": "0x2"
+            "nonce": "0x3"
         },
         {
             "signature": transaction_signatures[1]['signature'],
@@ -125,7 +125,7 @@ if __name__ == "__main__":
             "signature": transaction_signatures[2]['signature'],
             "operation": transaction_signatures[2]['operation'],
 	        "amount": "0x1F4", # 500
-            "nonce": "0x2"
+            "nonce": "0x4"
         },
     ]
 
@@ -143,9 +143,9 @@ if __name__ == "__main__":
             "targetIndex": "0x2",
         },
         {
-	        "sourceAddress":  formatted_accounts[2],
+	        "sourceAddress":  formatted_accounts[0],
             "targetAddress":  formatted_accounts[1],
-            "sourceIndex": "0x2",
+            "sourceIndex": "0x0",
             "targetIndex": "0x1",
         },
     ]
