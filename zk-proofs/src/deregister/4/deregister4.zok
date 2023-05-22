@@ -1,23 +1,41 @@
 from "./../../lib/merkleTree" import merkleTreeProof, generateMerkleTree;
+from "./../../lib/concatenator" import concatenateTwoArraysIn256;
 
 const u32 TREE_DEPTH = 2;
 const u32 TRANSAC_NUM = 3;
 const u32 ACCOUNT_NUM = 4;
 
 // TODO: add nonces and balances
-def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8] hashedAccounts, private u32 position) -> u32[8] {
+def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8] hashedAccounts, u32[8] balanceNonceRoot, private u32[ACCOUNT_NUM] balances, private u32[ACCOUNT_NUM] nonces, private u32 position) -> (u32[8], u32[8]) {
 
     // verify that the accounts are the right ones
     u32[8] generatedOldAccountRoot = generateMerkleTree(hashedAccounts, TREE_DEPTH);
     assert(accountRoot == generatedOldAccountRoot);
     log("account root generated {}", generatedOldAccountRoot);
 
+    // verify that the balances + nonces inputed are the right ones
+    u32[ACCOUNT_NUM][8] balancesNonces = concatenateTwoArraysIn256(balances, nonces);
+    u32[8] generatedBalanceNonceRoot = generateMerkleTree(balancesNonces, TREE_DEPTH);
+    log("balance + nonces root generated {}", generatedBalanceNonceRoot);
+    assert(balanceNonceRoot == generatedBalanceNonceRoot);
+
+    // update the account keys
     u32[ACCOUNT_NUM][8] mut newHashedAccounts = hashedAccounts;
     u32[8] emptyAccount = [0; 8];
     newHashedAccounts[position] = emptyAccount;
 
+    // update balances and nonces
+    u32[ACCOUNT_NUM] mut newBalances = balances;
+    newBalances[position] = 0;
+    u32[ACCOUNT_NUM] mut newNonces = nonces;
+    newNonces[position] = 0;
+
+    u32[ACCOUNT_NUM][8] newBalancesNonces = concatenateTwoArraysIn256(newBalances, newNonces);
+    u32[8] newBalancesNoncesRoot = generateMerkleTree(newBalancesNonces, TREE_DEPTH);
+    log("new balance + nonces root generated {}", newBalancesNoncesRoot);
+
     u32[8] newAccountRoot = generateMerkleTree(newHashedAccounts, TREE_DEPTH);
     log("new account root {}", newAccountRoot);
 
-    return newAccountRoot;
+    return (newAccountRoot, newBalancesNoncesRoot);
 }

@@ -91,9 +91,33 @@ if __name__ == "__main__":
         "0x420eab89", "0x433a4cd4", "0xbed85a13", "0xf5beaeaa", "0x15db44ed"
     ]
 
+    balances = [
+        "0x2DC6C0",  # 3000000
+        "0x4C4B40",  # 5000000
+        "0x0",
+        "0x0",
+    ]
+
+    # balance_root = calculate_tree_root([str_to_bytes(x, 16) for x in balances])
+
+    nonces = [
+        "0x2",
+        "0x1",
+        "0x1",
+        "0x1",
+    ]
+
+    concatenatedBalancesNonces = concatenateTwoArraysIn256(balances, nonces)
+
+    concatenatedBalancesNoncesTreeRoot = calculate_tree_root(
+        concatenatedBalancesNonces)
+
     obj = json.dumps([
         account_root,
         formatted_accounts,
+        concatenatedBalancesNoncesTreeRoot,
+        balances,
+        nonces,
         "0x0"
     ], indent=4)
 
