@@ -1,7 +1,7 @@
 {
   "name": "master-thesis",
   "version": "1.0.0",
-  "description": "",
+  "description": "This folder contains the source code of the smart contracts deployed to the Tezos blockchain.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,5 +13,8 @@
     "@taqueria/plugin-flextesa": "^0.28.6",
     "@taqueria/plugin-smartpy": "^0.28.6",
     "@taqueria/plugin-taquito": "^0.28.6"
+  },
+  "directories": {
+    "test": "tests"
   }
 }
