@@ -34,23 +34,6 @@ def checkTransactions<N, M>(TransactionHelper[N] transactionExtras, u32[M][8] ha
     return true;
 }
 
-def checkApplyNoncesTransactions<N, M>(u32[M] nonces, Transaction[N] transactions, TransactionHelper[N] transactionExtras) -> u32[M] {
-
-    u32[M] mut newNonces = nonces;
-
-    for u32 i in 0..N {
-        Transaction transaction = transactions[i];
-        TransactionHelper transactionHelper = transactionExtras[i];
-
-        // check that nonce is the expected one
-        assert(transaction.nonce == (newNonces[transactionHelper.sourceIndex]) + 1);
-
-        // increment the nonce array
-        newNonces[transactionHelper.sourceIndex] = transaction.nonce;
-    }
-    return newNonces;
-}
-
 def calculateNewBalancesAndNonces<N, M>(u32[M] balances, u32[M] nonces, Transaction[N] transactions, TransactionHelper[N] transactionExtras) -> u32[2][M] {
 
     u32[M] mut newBalances = balances;

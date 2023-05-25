@@ -1,5 +1,5 @@
 from "./../lib/merkleTree" import merkleTreeProof, generateMerkleTree;
-from "./../lib/transactions" import checkTransactions, checkApplyNoncesTransactions ,calculateNewBalancesAndNonces, Transaction, TransactionHelper;
+from "./../lib/transactions" import checkTransactions ,calculateNewBalancesAndNonces, Transaction, TransactionHelper;
 from "./../lib/concatenator" import concatenateTwoArraysIn256;
 
 const u32 TREE_DEPTH = 2;
