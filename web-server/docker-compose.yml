@@ -1,0 +1,22 @@
+version: "2"
+services:
+  node:
+    image: node:20.2.0
+    working_dir: /home/node/app
+    environment:
+      - MONGODB_CONNSTRING=mongodb://manager:secretpassw@mongodb
+    volumes:
+      - ./:/home/node/app
+    command: >
+      sh -c "npm start"
+    ports:
+      - 3000:3000
+    depends_on:
+      - mongodb
+  mongodb:
+    image: mongo:6.0.6
+    volumes:
+      - ./mongoData:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=manager
+      - MONGO_INITDB_ROOT_PASSWORD=secretpassw

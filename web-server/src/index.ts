@@ -1,18 +1,15 @@
-import express, {Application, Request, Response} from 'express';
+import express, {Express, Request, Response} from 'express';
 
-const app2 = express();
+import BodyParser from 'body-parser';
+import {itemsRouter} from './routes';
 
-import {BodyParser} from 'body-parser';
-
-const app = new Express();
-// support parsing of application/json type post data
-app.use(bodyParser.json());
+const app: Express = express();
 const port = 3000;
-const routes = require('./s rc/routes');
-app.use('/', routes);
+
+app.use(BodyParser.json());
+
+app.use('/', itemsRouter);
 
 app.listen(port, () => {
-  console.log(`Success! Your application is running on port ${port}.`);
+  console.log(`[Server]: I am running at https://localhost:${port}`);
 });
-
-// import { makeApp } from "@2aa/fastify-lib";
