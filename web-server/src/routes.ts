@@ -2,6 +2,7 @@ import express from 'express';
 import {
   addTransaction,
   getAllTransactions,
+  signData,
 } from './middleware/transactionMiddleware';
 import {executeRollup} from './middleware/rollupMiddleware';
 
@@ -15,3 +16,6 @@ itemsRouter.put('/transactions', addTransaction);
 
 // Execute the rollup
 itemsRouter.post('/rollup', executeRollup);
+
+// Execute a signature
+itemsRouter.get('/sign', signData);
