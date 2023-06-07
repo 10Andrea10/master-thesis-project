@@ -1,9 +1,9 @@
 import {verifySignature as verifySignatureTaquito} from '@taquito/utils';
 import {InMemorySigner} from '@taquito/signer';
-import {FullTransaction} from '../typings/fullTransaction';
+import {Transaction} from '../typings/transaction';
 import {edpkToIntArray} from './binaryConverter';
 
-export function verifySignature(transaction: FullTransaction): boolean {
+export function verifySignature(transaction: Transaction): boolean {
   const binarySource = edpkToIntArray(transaction.source);
   const binaryTarget = edpkToIntArray(transaction.target);
   const amount = transaction.amount;

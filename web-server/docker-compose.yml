@@ -5,6 +5,8 @@ services:
     working_dir: /home/node/app
     environment:
       - MONGODB_CONNSTRING=mongodb://manager:secretpassw@mongodb
+      - MONGODB_DBNAME=transactionsDB
+      - MONGODB_COLLECTION=transactions
     volumes:
       - ./:/home/node/app
     command: >

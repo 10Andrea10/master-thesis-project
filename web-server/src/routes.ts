@@ -1,23 +1,17 @@
-import express from 'express';
-import {TransactionMiddleware} from './middleware/transactionMiddleware';
-import {RollupMiddleware} from './middleware/rollupMiddleware';
-import {MongoInteractor} from './services/mongoInteractor';
+import {Services} from './typings/services';
 
-export const itemsRouter = express.Router();
+export async function initRoutes(services: Services) {
+  const {router, transactionMiddleware, rollupMiddleware} = services;
 
-const mongoInteractor = new MongoInteractor();
-const transactionMiddleware = new TransactionMiddleware(mongoInteractor);
+  /// Gets all transactions stored in the queue
+  router.get('/transactions', transactionMiddleware.getAllTransactions);
 
-const rollupMiddleware = new RollupMiddleware();
+  // Puts a transaction in the queue
+  router.put('/transactions', transactionMiddleware.addTransaction);
 
-/// Gets all transactions stored in the queue
-itemsRouter.get('/transactions', transactionMiddleware.getAllTransactions);
+  // Execute the rollup
+  router.post('/rollup', rollupMiddleware.executeRollup);
 
-// Puts a transaction in the queue
-itemsRouter.put('/transactions', transactionMiddleware.addTransaction);
-
-// Execute the rollup
-itemsRouter.post('/rollup', rollupMiddleware.executeRollup);
-
-// Execute a signature
-itemsRouter.get('/sign', transactionMiddleware.signData);
+  // Execute a signature
+  router.get('/sign', transactionMiddleware.signData);
+}

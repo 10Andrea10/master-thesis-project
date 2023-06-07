@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import {FullTransaction} from '../typings/fullTransaction';
+import {Transaction} from '../typings/transaction';
 import {signPayload, verifySignature} from '../utils/taquito';
 import {b58cdecode, prefix} from '@taquito/utils';
 import {edpkToIntArray} from '../utils/binaryConverter';
@@ -9,7 +9,7 @@ export class TransactionMiddleware {
   constructor(private readonly mongoInteractor: MongoInteractor) {}
 
   addTransaction(request: Request, response: Response) {
-    const transaction: FullTransaction = new FullTransaction(
+    const transaction: Transaction = new Transaction(
       request.body.signature,
       request.body.source,
       request.body.target,
@@ -20,6 +20,7 @@ export class TransactionMiddleware {
     if (!signatureVerified) {
       response.status(400).send('Signature is not valid');
     }
+    // TODO: check duplicate and insert data into db
   }
 
   getAllTransactions(request: Request, response: Response) {}
