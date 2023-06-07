@@ -1,21 +1,23 @@
 import express from 'express';
-import {
-  addTransaction,
-  getAllTransactions,
-  signData,
-} from './middleware/transactionMiddleware';
-import {executeRollup} from './middleware/rollupMiddleware';
+import {TransactionMiddleware} from './middleware/transactionMiddleware';
+import {RollupMiddleware} from './middleware/rollupMiddleware';
+import {MongoInteractor} from './services/mongoInteractor';
 
 export const itemsRouter = express.Router();
 
+const mongoInteractor = new MongoInteractor();
+const transactionMiddleware = new TransactionMiddleware(mongoInteractor);
+
+const rollupMiddleware = new RollupMiddleware();
+
 /// Gets all transactions stored in the queue
-itemsRouter.get('/transactions', getAllTransactions);
+itemsRouter.get('/transactions', transactionMiddleware.getAllTransactions);
 
 // Puts a transaction in the queue
-itemsRouter.put('/transactions', addTransaction);
+itemsRouter.put('/transactions', transactionMiddleware.addTransaction);
 
 // Execute the rollup
-itemsRouter.post('/rollup', executeRollup);
+itemsRouter.post('/rollup', rollupMiddleware.executeRollup);
 
 // Execute a signature
-itemsRouter.get('/sign', signData);
+itemsRouter.get('/sign', transactionMiddleware.signData);

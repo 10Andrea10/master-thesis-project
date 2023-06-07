@@ -1,8 +1,8 @@
 export class FullTransaction {
   constructor(
-    readonly signature: String,
-    readonly sourcePublicKey: String,
-    readonly targetPublicKey: String,
+    readonly signature: string,
+    readonly source: string,
+    readonly target: string,
     readonly amount: number,
     readonly nonce: number
   ) {}

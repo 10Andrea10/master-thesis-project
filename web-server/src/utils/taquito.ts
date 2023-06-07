@@ -1,12 +1,22 @@
 import {verifySignature as verifySignatureTaquito} from '@taquito/utils';
 import {InMemorySigner} from '@taquito/signer';
+import {FullTransaction} from '../typings/fullTransaction';
+import {edpkToIntArray} from './binaryConverter';
 
-export function verifySignature(
-  payload: string,
-  publicKey: string,
-  signature: string
-): boolean {
-  return verifySignatureTaquito(payload, publicKey, signature);
+export function verifySignature(transaction: FullTransaction): boolean {
+  const binarySource = edpkToIntArray(transaction.source);
+  const binaryTarget = edpkToIntArray(transaction.target);
+  const amount = transaction.amount;
+  const nonce = transaction.nonce;
+  const bufferedInput = Buffer.from(
+    `${binarySource}${binaryTarget}${amount}${nonce}`,
+    'utf-8'
+  );
+  return verifySignatureTaquito(
+    bufferedInput.toString(),
+    transaction.source,
+    transaction.signature
+  );
 }
 
 export async function signPayload(

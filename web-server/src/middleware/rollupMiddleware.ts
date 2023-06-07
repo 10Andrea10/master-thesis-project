@@ -1,1 +1,3 @@
-export function executeRollup() {}
+export class RollupMiddleware {
+  executeRollup() {}
+}
