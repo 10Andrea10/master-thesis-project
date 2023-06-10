@@ -10,8 +10,8 @@ services:
       - MONGODB_COLLECTION=transactions
     volumes:
       - ./:/home/node/app
-    # command: >
-    #   sh -c "npm start"
+    command: >
+      sh -c "npm start"
     ports:
       - 3000:3000
     depends_on:

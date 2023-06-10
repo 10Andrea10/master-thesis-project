@@ -18,7 +18,7 @@ export async function init() {
   const mongoInteractor = new MongoInteractor();
   await mongoInteractor.init();
   const transactionMiddleware = new TransactionMiddleware(mongoInteractor);
-  const rollupMiddleware = new RollupMiddleware();
+  const rollupMiddleware = new RollupMiddleware(mongoInteractor);
   const router = express.Router();
 
   const services: Services = {
@@ -33,6 +33,6 @@ export async function init() {
   app.use('/', router );
 
   app.listen(port, () => {
-    console.log(`[Server]: I am running at https://localhost:${port}`);
+    console.log(`[Web Server]: I am running at https://localhost:${port}`);
   });
 }
