@@ -9,6 +9,10 @@ export async function initRoutes(services: Services) {
   // Puts a transaction in the queue
   router.put('/transactions', transactionMiddleware.addTransaction);
 
+  // Deletes all transactions in the queue
+  // NOTE: This is a temporary endpoint for testing purposes
+  router.delete('/transactions', transactionMiddleware.deleteTransactions);
+
   // Execute the rollup
   router.post('/rollup', rollupMiddleware.executeRollup);
 

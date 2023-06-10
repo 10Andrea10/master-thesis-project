@@ -6,9 +6,14 @@ import {edpkToIntArray} from '../utils/binaryConverter';
 import {MongoInteractor} from '../services/mongoInteractor';
 
 export class TransactionMiddleware {
-  constructor(private readonly mongoInteractor: MongoInteractor) {}
+  constructor(private readonly mongoInteractor: MongoInteractor) {
+    this.addTransaction = this.addTransaction.bind(this);
+    this.getAllTransactions = this.getAllTransactions.bind(this);
+    this.deleteTransactions = this.deleteTransactions.bind(this);
+    this.signData = this.signData.bind(this);
+  }
 
-  addTransaction(request: Request, response: Response) {
+  async addTransaction(request: Request, response: Response): Promise<void> {
     const transaction: Transaction = new Transaction(
       request.body.signature,
       request.body.source,
@@ -20,12 +25,27 @@ export class TransactionMiddleware {
     if (!signatureVerified) {
       response.status(400).send('Signature is not valid');
     }
-    // TODO: check duplicate and insert data into db
+    await this.mongoInteractor.insertTransaction(transaction);
+    response.send();
   }
 
-  getAllTransactions(request: Request, response: Response) {}
+  async getAllTransactions(
+    request: Request,
+    response: Response
+  ): Promise<void> {
+    const transactions = await this.mongoInteractor.getTransactions();
+    response.send(transactions);
+  }
 
-  async signData(request: Request, response: Response) {
+  async deleteTransactions(
+    request: Request,
+    response: Response
+  ): Promise<void> {
+    await this.mongoInteractor.deleteTransactions();
+    response.send();
+  }
+
+  async signData(request: Request, response: Response): Promise<void> {
     const binarySource = edpkToIntArray(request.body.source);
     const binaryTarget = edpkToIntArray(request.body.target);
     const amount: string = request.body.amount;
@@ -39,13 +59,6 @@ export class TransactionMiddleware {
       bufferedInput.toString(),
       privateKeySource //'edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt'
     );
-    const convertedSignatureUint8Array = b58cdecode(signature, prefix.edsig);
-    const convertedSingatureBuffer = Buffer.from(convertedSignatureUint8Array);
-    const finalSignatureArray = [];
-    // Convert the buffer to a readable integer string
-    for (let i = 0; i < convertedSignatureUint8Array.length; i += 8) {
-      finalSignatureArray.push(convertedSingatureBuffer.readBigUint64BE(i));
-    }
-    response.send(finalSignatureArray.toString());
+    response.send(signature);
   }
 }

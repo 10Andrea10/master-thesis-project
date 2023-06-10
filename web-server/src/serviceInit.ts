@@ -13,6 +13,8 @@ export async function init() {
 
   app.use(BodyParser.json());
 
+  // Initialize the services
+
   const mongoInteractor = new MongoInteractor();
   await mongoInteractor.init();
   const transactionMiddleware = new TransactionMiddleware(mongoInteractor);
@@ -28,7 +30,7 @@ export async function init() {
 
   await initRoutes(services);
 
-  app.use('/', router);
+  app.use('/', router );
 
   app.listen(port, () => {
     console.log(`[Server]: I am running at https://localhost:${port}`);

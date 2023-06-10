@@ -2,6 +2,7 @@ version: "2"
 services:
   node:
     image: node:20.2.0
+    user: "node"
     working_dir: /home/node/app
     environment:
       - MONGODB_CONNSTRING=mongodb://manager:secretpassw@mongodb
@@ -9,8 +10,8 @@ services:
       - MONGODB_COLLECTION=transactions
     volumes:
       - ./:/home/node/app
-    command: >
-      sh -c "npm start"
+    # command: >
+    #   sh -c "npm start"
     ports:
       - 3000:3000
     depends_on:

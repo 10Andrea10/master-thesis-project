@@ -1,0 +1,13 @@
+// Fix to prettier not working on VSCode and giving error: "TypeError: Cannot read properties of undefined (reading 'uid')"
+{
+    "prettier.prettierPath": "./node_modules/prettier",
+    "cSpell.words": [
+        "cdecode",
+        "CONNSTRING",
+        "DBNAME",
+        "edpk",
+        "edsig",
+        "Interactor",
+        "taquito"
+    ]
+}
