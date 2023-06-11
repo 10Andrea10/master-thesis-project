@@ -8,6 +8,7 @@
         "edpk",
         "edsig",
         "Interactor",
-        "taquito"
+        "taquito",
+        "wtns"
     ]
 }

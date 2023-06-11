@@ -10,7 +10,8 @@ export async function init() {
   const app: Express = express();
   const port = 3005;
 
-  app.use(BodyParser.json());
+  // app.use(BodyParser.json());
+  app.use(BodyParser.text());
 
   // Initialize the services
   const zokratesInteractor = new ZokratesInteractor();

@@ -9,8 +9,11 @@ export class ExecutorMiddleware {
   }
 
   async executeRollup(request: Request, response: Response): Promise<void> {
-    const result = await this.zokratesInteractor.execute(request.body);
-    // TODO: send back the results.
-    response.send('Hello world from the executor!');
+    const computationalResult = await this.zokratesInteractor.execute(request.body);
+    if(computationalResult.success) {
+      response.send(computationalResult.result);
+    } else {
+      response.status(500).send(computationalResult.error);
+    }
   }
 }
