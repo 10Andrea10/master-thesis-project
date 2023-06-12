@@ -18,6 +18,8 @@ export class TransactionMiddleware {
       request.body.signature,
       request.body.source,
       request.body.target,
+      request.body.sourceIndex,
+      request.body.targetIndex,
       request.body.amount,
       request.body.nonce
     );

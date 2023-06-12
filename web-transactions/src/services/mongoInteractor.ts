@@ -36,6 +36,8 @@ export class MongoInteractor {
         transaction.signature,
         transaction.source,
         transaction.target,
+        transaction.sourceIndex,
+        transaction.targetIndex,
         transaction.amount,
         transaction.nonce
       );
