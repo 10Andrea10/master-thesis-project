@@ -11,7 +11,6 @@ import {TezosInteractor} from './services/tezosInteractor';
 export async function init() {
   const app: Express = express();
   const port = 3000;
-
   app.use(BodyParser.json());
 
   // Initialize the services

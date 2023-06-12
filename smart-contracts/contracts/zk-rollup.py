@@ -8,7 +8,7 @@ class ZKRollupContract(sp.Contract):
                     0 : sp.record(
                         pub_key = sp.key("edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"),
                         mutez_balance = sp.mutez(3000000),
-                        nonce = sp.nat(1),
+                        nonce = sp.nat(2),
                     ), 
                     1 : sp.record(
                         pub_key = sp.key("edpkvGfYw3LyB1UcCahKQk4rF2tvbMUk8GFiTuMjL75uGXrpvKXhjn"),
