@@ -96,7 +96,7 @@ class ZKRollupContract(sp.Contract):
         
         # Check if the current mr_balance_nonce is the same as the one received in the proof
         sp.for i in sp.range(16, 24):
-            sp.verify(sp.to_int(self.data.mr_balance_nonce.get(i-8)) == sp.to_int(params.received_values.get(i)))
+            sp.verify(sp.to_int(self.data.mr_balance_nonce.get(i-16)) == sp.to_int(params.received_values.get(i)))
         
         # TODO: put an if on the number of accounts passed as parameter and call the correct function
         self.register_new_with_4_accounts(params)
@@ -109,6 +109,7 @@ class ZKRollupContract(sp.Contract):
         self.verify_rollup_execution_4_accounts(params.received_values, params.received_proof_1, params.received_proof_2, params.received_proof_3)
 
         # TODO: change if the proof index changes
+        pos_first_element_root_balances_nonces = sp.local('pos_first_element_root_balances_nonces', sp.int(106))
         pos_first_balance_in_received_values = sp.local('pos_first_balance_in_received_values', sp.int(114))
         pos_first_nonce_in_received_values = sp.local('pos_first_nonce_in_received_values', sp.int(118))
         sp.for i in sp.range(0, sp.as_nat(4)):
@@ -118,6 +119,8 @@ class ZKRollupContract(sp.Contract):
             self.data.accounts[i].mutez_balance = sp.utils.nat_to_mutez(sp.as_nat(sp.to_int(params.received_values[ sp.to_int(i) + pos_first_balance_in_received_values.value])))
             self.data.accounts[i].nonce = sp.as_nat(sp.to_int(params.received_values[ sp.to_int(i) + pos_first_nonce_in_received_values.value]))
             self.data.last_rollup_timestamp = sp.timestamp_from_utc_now()
+        sp.for i in sp.range(0, 8):
+            self.data.mr_balance_nonce[i] = params.received_values[i + pos_first_element_root_balances_nonces.value ]
     
 
     def register_new_with_4_accounts(self, params):
@@ -291,8 +294,10 @@ class ZKRollupContract(sp.Contract):
         # TODO: check if this is correct, I removed the check1 and check2 from the contract storage
         check1 = sp.pairing_check(list_pair1)
         check2 = sp.pairing_check(list_pair2)
-        sp.if check1 & check2 != True:
-            sp.failwith("The proof is not valid")
+        sp.if check1 != True:
+            sp.failwith("The proof is not valid, check1 failed")
+        sp.if check2 != True:
+            sp.failwith("The proof is not valid, check2 failed")
     
     def verify_register_execution_4_accounts(self, input, proof_a, proof_b, proof_c):
         sp.set_type(input, sp.TBigMap(sp.TInt, sp.TBls12_381_fr)) 
