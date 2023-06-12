@@ -1,7 +1,8 @@
-import {TezosToolkit} from '@taquito/taquito';
+import {MichelsonMap, TezosToolkit} from '@taquito/taquito';
 import {hexStringLittleToBigEndian} from '../utils/endianConverter';
 import {Account, AccountsMapValue} from '../typings/smartContract';
 import got from 'got';
+import {InMemorySigner} from '@taquito/signer';
 
 export class TezosInteractor {
   private zkRollupContract: string;
@@ -85,5 +86,56 @@ export class TezosInteractor {
       balances: bigMap.map(account => account.value.mutez_balance),
       nonces: bigMap.map(account => account.value.nonce),
     };
+  }
+
+  async callRollUpSmartContract(
+    proofConverted: any,
+    privateKey: string
+  ): Promise<string> {
+    // Convert the proofConverted to a JSON object
+    var proofConvertedJSON = JSON.parse(proofConverted);
+
+    const inputsConverted = proofConvertedJSON.inputs;
+    const inputsMichelsonMap = new MichelsonMap();
+    // Add the inputs to the map
+    for (let i = 0; i < inputsConverted.length; i++) {
+      inputsMichelsonMap.set(i, inputsConverted[i]);
+    }
+    // Remove prefix 0x from the proof.a, proof.b and proof.c
+    proofConvertedJSON.proof.a = proofConvertedJSON.proof.a.replace('0x', '');
+    proofConvertedJSON.proof.b = proofConvertedJSON.proof.b.replace('0x', '');
+    proofConvertedJSON.proof.c = proofConvertedJSON.proof.c.replace('0x', '');
+
+    let result = '';
+
+    try {
+      this.tezos.setSignerProvider(
+        await InMemorySigner.fromSecretKey(privateKey)
+      );
+      const contract = await this.tezos.contract.at(this.zkRollupContract);
+      console.log(`Calling contract: ${this.zkRollupContract}...`);
+      const operation = await contract.methods
+        .receive_rollup_proof(
+          proofConvertedJSON.proof.a,
+          proofConvertedJSON.proof.b,
+          proofConvertedJSON.proof.c,
+          inputsMichelsonMap
+        )
+        .send();
+      console.log(`Waiting for ${operation.hash} to be confirmed...`);
+      await operation.confirmation(1);
+      console.log(
+        `Operation injected: https://ghostnet.tzkt.io/${operation.hash}`
+      );
+      result = operation.hash;
+    } catch (e) {
+      console.log(e);
+      if (e instanceof Error) {
+        result = e.message;
+      }
+    } finally {
+      this.tezos.setSignerProvider(undefined);
+    }
+    return result;
   }
 }

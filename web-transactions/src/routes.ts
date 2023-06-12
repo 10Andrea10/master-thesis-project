@@ -1,3 +1,4 @@
+import {NextFunction, Request, Response} from 'express';
 import {Services} from './typings/services';
 
 export async function initRoutes(services: Services) {
@@ -14,8 +15,23 @@ export async function initRoutes(services: Services) {
   router.delete('/transactions', transactionMiddleware.deleteTransactions);
 
   // Execute the rollup
-  router.post('/execute', rollupMiddleware.executeRollup);
+  router.post(
+    '/execute',
+    validateField('privateSignerKey'),
+    rollupMiddleware.executeRollup
+  );
 
   // Execute a signature
   router.get('/sign', transactionMiddleware.signData);
+}
+
+// Middleware to validate the presence of a field in the request body
+function validateField(fieldName: string) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!req.body[fieldName]) {
+      return res.status(400).json({error: `${fieldName} is required`});
+    }
+    next();
+    return;
+  };
 }
