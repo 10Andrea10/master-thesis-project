@@ -14,7 +14,7 @@ export async function initRoutes(services: Services) {
   router.delete('/transactions', transactionMiddleware.deleteTransactions);
 
   // Execute the rollup
-  router.post('/rollup', rollupMiddleware.executeRollup);
+  router.post('/execute', rollupMiddleware.executeRollup);
 
   // Execute a signature
   router.get('/sign', transactionMiddleware.signData);

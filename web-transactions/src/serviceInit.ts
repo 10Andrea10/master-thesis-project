@@ -6,6 +6,7 @@ import {MongoInteractor} from './services/mongoInteractor';
 import {TransactionMiddleware} from './middleware/transactionMiddleware';
 import {RollupMiddleware} from './middleware/rollupMiddleware';
 import {Services} from './typings/services';
+import {TezosInteractor} from './services/tezosInteractor';
 
 export async function init() {
   const app: Express = express();
@@ -18,7 +19,11 @@ export async function init() {
   const mongoInteractor = new MongoInteractor();
   await mongoInteractor.init();
   const transactionMiddleware = new TransactionMiddleware(mongoInteractor);
-  const rollupMiddleware = new RollupMiddleware(mongoInteractor);
+  const tezosInteractor = new TezosInteractor();
+  const rollupMiddleware = new RollupMiddleware(
+    mongoInteractor,
+    tezosInteractor
+  );
   const router = express.Router();
 
   const services: Services = {
@@ -30,7 +35,7 @@ export async function init() {
 
   await initRoutes(services);
 
-  app.use('/', router );
+  app.use('/', router);
 
   app.listen(port, () => {
     console.log(`[Web Server]: I am running at https://localhost:${port}`);

@@ -2,12 +2,17 @@
 {
     "prettier.prettierPath": "./node_modules/prettier",
     "cSpell.words": [
+        "bigmap",
         "cdecode",
         "CONNSTRING",
         "DBNAME",
         "edpk",
         "edsig",
         "Interactor",
-        "taquito"
+        "mutez",
+        "nodenext",
+        "posttest",
+        "taquito",
+        "TZSTATS"
     ]
 }

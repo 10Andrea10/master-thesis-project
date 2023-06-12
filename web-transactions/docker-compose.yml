@@ -8,6 +8,10 @@ services:
       - MONGODB_CONNSTRING=mongodb://manager:secretpassw@mongodb
       - MONGODB_DBNAME=transactionsDB
       - MONGODB_COLLECTION=transactions
+      - WEB_ROLLUP_SERVER_URL=http://localhost:3005
+      - ZK_ROLLUP_ADDRESS=KT1GC3AuTBURL1KqFdnGHoHkV2dgqRfNqznY
+      - TEZOS_RPC_NODE_URL=https://ghostnet.ecadinfra.com/
+      - TEZOS_API_TZSTATS=https://api.ghost.tzstats.com/
     volumes:
       - ./:/home/node/app
     command: >

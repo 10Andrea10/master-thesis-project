@@ -14,3 +14,9 @@ The installation of the web server is done using the following command:
 npm install
 npm start
 ```
+
+## Usage
+
+The web server is listening on port 3005. The following endpoints are available:
+
+- `/execute` : expects in the body the inputs of the Zokrates program. NOTE: the content-type must be `text/plain`
