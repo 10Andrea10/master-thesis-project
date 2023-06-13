@@ -1,22 +1,19 @@
 import {Request, Response} from 'express';
-import {MongoInteractor} from '../services/mongoInteractor';
 
 import got from 'got';
 import {TezosInteractor} from '../services/tezosInteractor';
-import {Rollup} from '../typings/rollup';
 import {convertProof} from '../utils/proofConverter';
+import {Deregistration} from '../typings/deregistration';
 
-export class RollupMiddleware {
-  constructor(
-    private readonly mongoInteractor: MongoInteractor,
-    private readonly tezosInteractor: TezosInteractor
-  ) {
-    this.executeRollup = this.executeRollup.bind(this);
+export class UserMiddleware {
+  constructor(private readonly tezosInteractor: TezosInteractor) {
+    this.deleteUser = this.deleteUser.bind(this);
   }
 
-  async executeRollup(request: Request, response: Response): Promise<void> {
+  async deleteUser(request: Request, response: Response): Promise<void> {
     const privateSignerKey = request.body.privateSignerKey;
-    const transactions = await this.mongoInteractor.getTransactions();
+    const signature = request.body.signature;
+    const position = request.body.position;
     const {publicKeys, balances, nonces} =
       await this.tezosInteractor.getBigMapValues();
     const addressesTreeRoot = await this.tezosInteractor.getMKRoot(
@@ -25,14 +22,16 @@ export class RollupMiddleware {
     const balanceNonceTreeRoot = await this.tezosInteractor.getMKRoot(
       'mr_balance_nonce'
     );
-    const rollup = new Rollup(
-      addressesTreeRoot,
-      balanceNonceTreeRoot,
-      transactions,
-      publicKeys,
-      balances,
-      nonces
-    );
+    // TODO: 
+    const rollup = new Deregistration(
+        addressesTreeRoot,
+        balanceNonceTreeRoot,
+        publicKeys,
+        balances,
+        nonces,
+        signature,
+        position
+    );    
     const zokratesInputs = rollup.toZokratesInput();
     const proof = await got.post(
       process.env.WEB_ROLLUP_SERVER_URL + '/execute',
@@ -42,7 +41,7 @@ export class RollupMiddleware {
         throwHttpErrors: false,
       }
     );
-    if(proof.statusCode !== 200) {
+    if (proof.statusCode !== 200) {
       response.status(proof.statusCode).send(proof.body);
     }
 

@@ -1,1 +1,0 @@
-const interact = require('./interact');

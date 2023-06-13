@@ -1,4 +1,9 @@
 import {edpkToIntArray, edsigToInt64Array} from '../utils/binaryConverter';
+import {
+  convertPublicKeys,
+  numberArrayToStringArray,
+  numberToHex,
+} from '../utils/stringConverter';
 import {Transaction} from './transaction';
 
 export class Rollup {
@@ -12,41 +17,19 @@ export class Rollup {
   ) {}
 
   public toZokratesInput() {
-    const publicKeys = this.convertPublicKeys();
+    const publicKeys = convertPublicKeys(this.publicKeys);
     const {transactions, transactionHelpers} = this.convertTransactions();
-    const hexBalances: string[] = [];
-    for (const balance of this.balances) {
-      // NOTE: I have no idea why this is necessary, but it is.
-      // If I do balance.toString(16) does not convert to hex at all.
-      const tmp = balance.toString();
-      const tmp2 = parseInt(tmp);
-      const tmp3 = tmp2.toString(16);
-      hexBalances.push("0x" + tmp3);
-    }
-    const hexNonces = [];
-    for (const nonce of this.nonces) {
-      const tmp = nonce.toString();
-      const tmp2 = parseInt(tmp);
-      const tmp3 = tmp2.toString(16);
-      hexNonces.push("0x" + tmp3);
-    }
+    const hexBalances = this.balances.map(element => numberToHex(element));
+    const hexNonces = this.nonces.map(element => numberToHex(element));
     return [
-      this.numberArrayToStringArray(this.addressesTreeRoot),
-      publicKeys.map(this.numberArrayToStringArray),
-      this.numberArrayToStringArray(this.balanceNonceTreeRoot),
+      numberArrayToStringArray(this.addressesTreeRoot),
+      publicKeys.map(numberArrayToStringArray),
+      numberArrayToStringArray(this.balanceNonceTreeRoot),
       hexBalances,
       hexNonces,
       transactions,
       transactionHelpers,
     ];
-  }
-
-  private convertPublicKeys(): number[][] {
-    const publicKeys = [];
-    for (const publicKey of this.publicKeys) {
-      publicKeys.push(edpkToIntArray(publicKey));
-    }
-    return publicKeys;
   }
 
   private convertTransactions() {
@@ -57,25 +40,21 @@ export class Rollup {
         element.toString()
       );
       transactions.push({
-        sourceIndex: "0x" + transaction.sourceIndex.toString(16),
-        targetIndex: "0x" + transaction.targetIndex.toString(16),
-        amount: "0x" + transaction.amount.toString(16),
-        nonce: "0x" + transaction.nonce.toString(16),
+        sourceIndex: '0x' + transaction.sourceIndex.toString(16),
+        targetIndex: '0x' + transaction.targetIndex.toString(16),
+        amount: '0x' + transaction.amount.toString(16),
+        nonce: '0x' + transaction.nonce.toString(16),
       });
       transactionHelpers.push({
-        sourceAddress: this.numberArrayToStringArray(
+        sourceAddress: numberArrayToStringArray(
           edpkToIntArray(transaction.source)
         ),
-        targetAddress: this.numberArrayToStringArray(
+        targetAddress: numberArrayToStringArray(
           edpkToIntArray(transaction.target)
         ),
         signature,
       });
     }
     return {transactions, transactionHelpers};
-  }
-
-  private numberArrayToStringArray(numberArray: number[]) {
-    return numberArray.map(element => element.toString());
   }
 }
