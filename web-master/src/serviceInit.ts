@@ -37,6 +37,6 @@ export async function init() {
   app.use('/', router);
 
   app.listen(port, () => {
-    console.log(`[Web Server]: I am running at https://localhost:${port}`);
+    console.log(`[Web Master]: I am running at https://localhost:${port}`);
   });
 }

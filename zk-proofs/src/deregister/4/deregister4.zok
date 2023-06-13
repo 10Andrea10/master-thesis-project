@@ -2,10 +2,8 @@ from "./../../lib/merkleTree" import merkleTreeProof, generateMerkleTree;
 from "./../../lib/concatenator" import concatenateTwoArraysIn256;
 
 const u32 TREE_DEPTH = 2;
-const u32 TRANSAC_NUM = 3;
 const u32 ACCOUNT_NUM = 4;
 
-// TODO: add nonces and balances
 def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8] hashedAccounts, u32[8] balanceNonceRoot, private u32[ACCOUNT_NUM] balances, private u32[ACCOUNT_NUM] nonces, private u32 position) -> (u32[8], u32[8]) {
 
     // verify that the accounts are the right ones
@@ -18,6 +16,11 @@ def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8] hashedAccounts, u32[8] 
     u32[8] generatedBalanceNonceRoot = generateMerkleTree(balancesNonces, TREE_DEPTH);
     log("balance + nonces root generated {}", generatedBalanceNonceRoot);
     assert(balanceNonceRoot == generatedBalanceNonceRoot);
+
+    // verify that the account is drained from the balance
+    assert(balances[position] == 0);
+    // verify the accout is not already deregistered
+    assert(hashedAccounts[position] != [0; 8]);
 
     // update the account keys
     u32[ACCOUNT_NUM][8] mut newHashedAccounts = hashedAccounts;
