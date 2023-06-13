@@ -61,7 +61,6 @@ def concatenateTwoArraysIn256(array1: [str], array2: [str]) -> [bytearray]:
 
 if __name__ == "__main__":
 
-    # taken from file `dev.env`
     pubkeys = [
         "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4",   # alice
         "edpkvGfYw3LyB1UcCahKQk4rF2tvbMUk8GFiTuMjL75uGXrpvKXhjn",   # bob
