@@ -46,7 +46,6 @@ def decode_operation(operation: str) -> list:
     op = bytearray.fromhex(operation[2:])
     return ["0"] + bytes_to_u_array(op, bitsize=64)
 
-
 def calculate_tree_root(values: [bytearray]) -> bytearray:
 
     h0 = sha256(values[0], values[1])
