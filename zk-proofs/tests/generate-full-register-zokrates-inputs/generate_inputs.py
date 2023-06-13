@@ -13,7 +13,7 @@ def sha256(lhs: bytearray, rhs: bytearray):
     return hashlib.sha256(lhs + rhs).digest()
 
 
-def str_to_bytes(point: str, base: int) -> bytearray:
+def str_to_bytes(point: str, base: int) -> bytes:
     return int(point, base=base).to_bytes(32, "big", signed=False)
 
 
@@ -30,8 +30,8 @@ def bytes_to_u_array(val: bytearray, bitsize: int = 32, abi: bool = False) -> li
 
 def byte32_to_u32_array8(val: bytearray) -> list:
     if val == b"":
-        fakeArray = bytearray(32)
-        return bytes_to_u_array(fakeArray)
+        fake_array = bytearray(32)
+        return bytes_to_u_array(fake_array)
 
     assert (len(val) == 32)
     return bytes_to_u_array(val)
@@ -57,7 +57,7 @@ def calculate_tree_root(values: [bytearray]) -> bytearray:
     return byte32_to_u32_array8(h00)
 
 
-def concatenateTwoArraysIn256(array1: [str], array2: [str]) -> [bytearray]:
+def concatenate_two_arrays_in_256(array1: [str], array2: [str]) -> [bytearray]:
     result = []
     for i in range(0, len(array1)):
         result.append(
@@ -109,7 +109,7 @@ if __name__ == "__main__":
 
     # nonces_root = calculate_tree_root([str_to_bytes(x, 16) for x in nonces])
 
-    concatenatedBalancesNonces = concatenateTwoArraysIn256(balances, nonces)
+    concatenatedBalancesNonces = concatenate_two_arrays_in_256(balances, nonces)
 
     concatenatedBalancesNoncesTreeRoot = calculate_tree_root(
         concatenatedBalancesNonces)
