@@ -1,19 +1,19 @@
 import {spawn} from 'child_process';
 import {ComputationResult} from '../typings/services';
-import { readFileSync, rmSync } from 'fs';
+import {readFileSync, rmSync} from 'fs';
 
 export class ZokratesInteractor {
-  private readonly workDir: string = './src/zokrates';
+  // private readonly workDir: string = './src/zokratesRollup';
 
   /**
    * Computes the rollup proof spawning a zokrates process.
    * @param inputs The zokrates inputs properly formatted.
    * @returns The rollup proof execution.
    */
-  async execute(inputs: string): Promise<ComputationResult> {
+  async execute(inputs: string, workDir: string): Promise<ComputationResult> {
     return new Promise<ComputationResult>(resolveCallback => {
       const proc = spawn('zokrates', ['compute-witness', '--abi', '--stdin'], {
-        cwd: this.workDir,
+        cwd: workDir,
       });
 
       console.log(inputs.toString());
@@ -26,7 +26,7 @@ export class ZokratesInteractor {
       proc.on('close', code => {
         this.printExitCode(code);
         if (code == 0) {
-          this.proofGeneration(resolveCallback);
+          this.proofGeneration(resolveCallback, workDir);
         } else {
           resolveCallback({
             success: false,
@@ -38,9 +38,12 @@ export class ZokratesInteractor {
     });
   }
 
-  private proofGeneration(resolveCallback: (value: ComputationResult) => void) {
+  private proofGeneration(
+    resolveCallback: (value: ComputationResult) => void,
+    workDir: string
+  ) {
     const proc = spawn('zokrates', ['generate-proof', '-s', 'gm17'], {
-      cwd: this.workDir,
+      cwd: workDir,
     });
     proc.stdout.on('data', this.printStdout);
     proc.stderr.on('data', this.printStderr);
@@ -50,7 +53,7 @@ export class ZokratesInteractor {
       if (code == 0) {
         resolveCallback({
           success: true,
-          result: this.readProof(),
+          result: this.readProof(workDir),
         });
       } else {
         resolveCallback({
@@ -61,12 +64,12 @@ export class ZokratesInteractor {
     });
   }
 
-  private readProof (): string {
-    const proof = readFileSync(this.workDir + '/proof.json', 'utf8');
+  private readProof(workDir: string): string {
+    const proof = readFileSync(workDir + '/proof.json', 'utf8');
     console.log(proof);
-    rmSync(this.workDir + '/proof.json');
-    rmSync(this.workDir + '/witness');
-    rmSync(this.workDir + '/out.wtns');
+    rmSync(workDir + '/proof.json');
+    rmSync(workDir + '/witness');
+    rmSync(workDir + '/out.wtns');
     return proof;
   }
 

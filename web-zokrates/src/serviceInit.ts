@@ -5,6 +5,7 @@ import {initRoutes} from './routes';
 import {Services} from './typings/services';
 import { ExecutorMiddleware } from './middleware/executorMiddleware';
 import { ZokratesInteractor } from './services/zokratesInteractor';
+import { DeregisterMiddleware } from './middleware/deregisterMiddleware';
 
 export async function init() {
   const app: Express = express();
@@ -16,12 +17,14 @@ export async function init() {
   // Initialize the services
   const zokratesInteractor = new ZokratesInteractor();
   const executorMiddleware = new ExecutorMiddleware(zokratesInteractor);
+  const deregisterMiddleware = new DeregisterMiddleware(zokratesInteractor);
 
   const router = express.Router();
 
   const services: Services = {
     router,
-    executorMiddleware
+    executorMiddleware,
+    deregisterMiddleware
   };
 
   await initRoutes(services);
