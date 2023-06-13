@@ -41,7 +41,6 @@ def decode_signature(signature: str) -> list:
     sig = decode_pubkey(signature)
     return bytes_to_u_array(sig, bitsize=64)
 
-
 def decode_operation(operation: str) -> list:
     op = bytearray.fromhex(operation[2:])
     return ["0"] + bytes_to_u_array(op, bitsize=64)
