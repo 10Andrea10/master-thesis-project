@@ -21,14 +21,14 @@ export class Rollup {
       const tmp = balance.toString();
       const tmp2 = parseInt(tmp);
       const tmp3 = tmp2.toString(16);
-      hexBalances.push(tmp3);
+      hexBalances.push("0x" + tmp3);
     }
     const hexNonces = [];
     for (const nonce of this.nonces) {
       const tmp = nonce.toString();
       const tmp2 = parseInt(tmp);
       const tmp3 = tmp2.toString(16);
-      hexNonces.push(tmp3);
+      hexNonces.push("0x" + tmp3);
     }
     return [
       this.numberArrayToStringArray(this.addressesTreeRoot),
@@ -57,10 +57,10 @@ export class Rollup {
         element.toString()
       );
       transactions.push({
-        signature,
-        operation: this.generateOperation(), // TODO: remove when operation is removed from rollup
-        amount: transaction.amount.toString(16),
-        nonce: transaction.nonce.toString(16),
+        sourceIndex: "0x" + transaction.sourceIndex.toString(16),
+        targetIndex: "0x" + transaction.targetIndex.toString(16),
+        amount: "0x" + transaction.amount.toString(16),
+        nonce: "0x" + transaction.nonce.toString(16),
       });
       transactionHelpers.push({
         sourceAddress: this.numberArrayToStringArray(
@@ -69,8 +69,7 @@ export class Rollup {
         targetAddress: this.numberArrayToStringArray(
           edpkToIntArray(transaction.target)
         ),
-        sourceIndex: transaction.sourceIndex.toString(16),
-        targetIndex: transaction.targetIndex.toString(16),
+        signature,
       });
     }
     return {transactions, transactionHelpers};
@@ -78,30 +77,5 @@ export class Rollup {
 
   private numberArrayToStringArray(numberArray: number[]) {
     return numberArray.map(element => element.toString());
-  }
-
-  private generateOperation() {
-    return [
-      '0',
-      '0',
-      '0',
-      '0',
-      '0',
-      '0',
-      '0',
-      '0',
-      '0',
-      '0',
-      '0',
-      '0',
-      '0',
-      '0',
-      '0',
-      '0',
-      '0',
-      '0',
-      '0',
-      '0',
-    ];
   }
 }

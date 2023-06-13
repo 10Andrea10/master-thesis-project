@@ -63,6 +63,7 @@ export class ZokratesInteractor {
 
   private readProof (): string {
     const proof = readFileSync(this.workDir + '/proof.json', 'utf8');
+    console.log(proof);
     rmSync(this.workDir + '/proof.json');
     rmSync(this.workDir + '/witness');
     rmSync(this.workDir + '/out.wtns');

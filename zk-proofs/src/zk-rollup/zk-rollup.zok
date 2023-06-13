@@ -20,7 +20,7 @@ def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8]hashedAccounts, u32[8] b
     assert(balanceNonceRoot == generatedBalanceNonceRoot);
 
     // iterate through each transaction and check that the corresponding signature and public key are correct
-    bool correctTransactions = checkTransactions(transactionExtras, hashedAccounts);
+    bool correctTransactions = checkTransactions(transactionExtras, hashedAccounts, transactions);
     log("accounts verified: {}", correctTransactions);
     assert(correctTransactions);
 
