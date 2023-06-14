@@ -4,7 +4,7 @@ from "./../../lib/concatenator" import concatenateTwoArraysIn256;
 const u32 TREE_DEPTH = 2;
 const u32 ACCOUNT_NUM = 4;
 
-def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8] hashedAccounts, u32[8] balanceNonceRoot, private u32[ACCOUNT_NUM] balances, private u32[ACCOUNT_NUM] nonces, private u32 position, private u64[8]signature) -> (u32[8], u32[8]) {
+def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8] hashedAccounts, u32[8] balanceNonceRoot, private u32[ACCOUNT_NUM] balances, private u32[ACCOUNT_NUM] nonces, u32 position, private u64[8]signature) -> (u32[8], u32[8]) {
 
     // verify that the accounts are the right ones
     u32[8] generatedOldAccountRoot = generateMerkleTree(hashedAccounts, TREE_DEPTH);
@@ -22,12 +22,21 @@ def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8] hashedAccounts, u32[8] 
 
     // verify that the account is drained from the balance
     assert(balances[position] == 0);
-    // verify the accout is not already deregistered
-    assert(hashedAccounts[position] != [0; 8]);
 
     // update the account keys
     u32[ACCOUNT_NUM][8] mut newHashedAccounts = hashedAccounts;
-    u32[8] emptyAccount = [0; 8];
+    // this represents the public key of the account edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4
+    // it is used because it is not possible to have in the smart contract big map an empty element
+    u32[8] emptyAccount = [
+        1974621841,
+        3881655503,
+        2173465381,
+        598290571,
+        2129109780,
+        559195614,
+        2703600737,
+        1217317262
+    ];
     newHashedAccounts[position] = emptyAccount;
 
     // update balances and nonces

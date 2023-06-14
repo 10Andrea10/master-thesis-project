@@ -53,6 +53,7 @@ export class RollupMiddleware {
     console.log('\n\n');
 
     const result = await this.tezosInteractor.callRollUpSmartContract(
+      "receive_rollup_proof",
       proofConverted,
       privateSignerKey
     );

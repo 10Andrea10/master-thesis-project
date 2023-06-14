@@ -89,6 +89,7 @@ export class TezosInteractor {
   }
 
   async callRollUpSmartContract(
+    entrypoint: string,
     proofConverted: any,
     privateKey: string
   ): Promise<string> {
@@ -114,8 +115,7 @@ export class TezosInteractor {
       );
       const contract = await this.tezos.contract.at(this.zkRollupContract);
       console.log(`Calling contract: ${this.zkRollupContract}...`);
-      const operation = await contract.methods
-        .receive_rollup_proof(
+      const operation = await contract.methods[entrypoint](
           proofConvertedJSON.proof.a,
           proofConvertedJSON.proof.b,
           proofConvertedJSON.proof.c,

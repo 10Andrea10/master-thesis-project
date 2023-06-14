@@ -134,8 +134,30 @@ class ZKRollupContract(sp.Contract):
     @sp.entry_point
     def receive_deregister_proof(self, params):
         self.initial_checks_mr(params)
-        pass
 
+        # TODO: put an if based on the number of accounts
+        self.deregister_with_4_accounts(params)
+    
+
+    def deregister_with_4_accounts(self, params):
+        entry_point = "verify_deregister_4"
+        verification_contract = "KT1GHx1UEG3X14w4yybnNhux7HcmKkj42F8V"
+
+        self.send_verification(params, verification_contract, entry_point)
+        # TODO: edit indexes if proof changes
+        pos_first_element_new_root_public_keys = sp.local('pos_first_element_new_root_public_keys', sp.int(17))
+        pos_first_element_new_root_balances_nonces = sp.local('pos_first_element_new_root_balances_nonces', sp.int(25))
+        pos_position_value = sp.local('pos_position_value', sp.int(16))
+
+        sp.for i in sp.range(0, 8):
+            self.data.mr_balance_nonce[i] = params.received_values[i + pos_first_element_new_root_balances_nonces.value ]
+        sp.for i in sp.range(0, 8):
+            self.data.mr_pub_key[i] = params.received_values[i + pos_first_element_new_root_public_keys.value ]
+        self.data.accounts[sp.as_nat(sp.to_int(params.received_values[pos_position_value.value]))].mutez_balance = sp.mutez(0)
+        self.data.accounts[sp.as_nat(sp.to_int(params.received_values[pos_position_value.value]))].nonce = sp.nat(0)
+        # This is a valid pulic key, and it's the one used for the tests. It's because it is not possible to 
+        # have a public key with all 0s.
+        self.data.accounts[sp.as_nat(sp.to_int(params.received_values[pos_position_value.value]))].pub_key = sp.key("edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4")
 
 
 

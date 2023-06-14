@@ -72,6 +72,12 @@ if __name__ == "__main__":
         "edpkvS6TDSWcqqj3EJi3NRrCMyN7oNw1B3Hp37R19tMThqM8YNhAuS",   # dave
     ]
 
+    my_pubkey= "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4"
+
+    my_pubkey_decoded = decode_pubkey(my_pubkey)
+
+    formatted_my_pubkey_decoded = byte32_to_u32_array8(my_pubkey_decoded)
+
     decoded_pubkeys = [decode_pubkey(x) for x in pubkeys]
 
     formatted_accounts = [byte32_to_u32_array8(x) for x in decoded_pubkeys]
@@ -113,7 +119,7 @@ if __name__ == "__main__":
         balances,
         nonces,
         position,
-        decoded_signature
+        decoded_signature,
     ], indent=4)
 
     with open("sampleZokinput.json", "w") as outfile:

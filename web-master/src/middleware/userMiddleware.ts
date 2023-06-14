@@ -57,12 +57,13 @@ export class UserMiddleware {
     console.log(proofConverted);
     console.log('\n\n');
 
-    // const result = await this.tezosInteractor.callRollUpSmartContract(
-    //   proofConverted,
-    //   privateSignerKey
-    // );
-    // response.status(200).send(result);
-    response.status(200);
+    // TODO: call deregister smart contract entrypoint
+    const result = await this.tezosInteractor.callRollUpSmartContract(
+      'receive_deregister_proof',
+      proofConverted,
+      privateSignerKey
+    );
+    response.status(200).send(result);
   }
 
   async signData(request: Request, response: Response): Promise<void> {
