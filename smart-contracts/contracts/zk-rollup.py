@@ -59,6 +59,34 @@ class ZKRollupContract(sp.Contract):
     def fooEntrypoint(self):
         pass
 
+    def initial_checks_mr(self, params):
+        # TODO: check if typing is correct
+        sp.set_type(params.received_values, sp.TBigMap(sp.TInt, sp.TBls12_381_fr))
+
+        # Check if the current mr_pub_key is the same as the one received in the proof
+        sp.for i in sp.range(0, 8):
+            sp.verify(sp.to_int(self.data.mr_pub_key[i]) == sp.to_int(params.received_values[i]))
+        
+        # Check if the current mr_balance_nonce is the same as the one received in the proof
+        sp.for i in sp.range(8, 16):
+            sp.verify(sp.to_int(self.data.mr_balance_nonce.get(i - 8)) == sp.to_int(params.received_values.get(i)))
+    
+    def send_verification(self, params, contract_address, entrypoint):
+        contractParams = sp.contract(
+        sp.TRecord(
+                input = sp.TBigMap(sp.TInt, sp.TBls12_381_fr),
+                proof_a = sp.TBls12_381_g1,
+                proof_b = sp.TBls12_381_g2,
+                proof_c = sp.TBls12_381_g1
+            ),
+            sp.address(contract_address),
+            entry_point = entrypoint
+        ).open_some()
+
+        dataToBeSent = sp.record(input = params.received_values, proof_a = params.received_proof_1, proof_b = params.received_proof_2, proof_c = params.received_proof_3)
+        sp.transfer(dataToBeSent,sp.mutez(0),contractParams)
+
+
 ################################################################################################
 #                                                                                              #
 #                                                                                              #
@@ -69,38 +97,17 @@ class ZKRollupContract(sp.Contract):
 
     @sp.entry_point
     def receive_rollup_proof(self, params):
-
-        # Check if the current mr_pub_key is the same as the one received in the proof
-        sp.for i in sp.range(0, 8):
-            sp.verify(sp.to_int(self.data.mr_pub_key[i]) == sp.to_int(params.received_values[i]))
-        
-        # Check if the current mr_balance_nonce is the same as the one received in the proof
-        sp.for i in sp.range(8, 16):
-            sp.verify(sp.to_int(self.data.mr_balance_nonce.get(i - 8)) == sp.to_int(params.received_values.get(i)))
+        self.initial_checks_mr(params)
 
         # TODO: put an if on the number of accounts passed as parameter and call the correct function
         self.rollup_with_4_accounts(params)
 
                 
     def rollup_with_4_accounts(self, params):
-
-        
-
+        entry_point = "verify_rollup_4"
         verification_contract = "KT1NDPhNvUhPCbYiGfqV8fqdCib1PQef7C8y"
 
-        contractParams = sp.contract(
-            sp.TRecord(
-                input = sp.TBigMap(sp.TInt, sp.TBls12_381_fr),
-                proof_a = sp.TBls12_381_g1,
-                proof_b = sp.TBls12_381_g2,
-                proof_c = sp.TBls12_381_g1
-            ),
-            sp.address(verification_contract),
-            entry_point="verify_rollup_4"
-        ).open_some()
-
-        dataToBeSent = sp.record(input = params.received_values, proof_a = params.received_proof_1, proof_b = params.received_proof_2, proof_c = params.received_proof_3)
-        sp.transfer(dataToBeSent,sp.mutez(0),contractParams)
+        self.send_verification(params, verification_contract, entry_point)
 
         # TODO: change if the proof index changes
         pos_first_element_new_root_balances_nonces = sp.local('pos_first_element_new_root_balances_nonces', sp.int(28))
@@ -123,6 +130,12 @@ class ZKRollupContract(sp.Contract):
 #                                                                                              #
 #                                                                                              #
 ################################################################################################
+
+    @sp.entry_point
+    def receive_deregister_proof(self, params):
+        self.initial_checks_mr(params)
+        pass
+
 
 
 

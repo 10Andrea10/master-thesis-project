@@ -8,7 +8,11 @@ export class ExecutorMiddleware {
   }
 
   async executeRollup(request: Request, response: Response): Promise<void> {
-    const computationalResult = await this.zokratesInteractor.execute(
+    console.log(
+      '[ExecutorMiddleware] Executing rollup with request: ',
+      request.body
+    );
+    const computationalResult = await this.zokratesInteractor.run(
       request.body,
       './src/zokratesRollup'
     );

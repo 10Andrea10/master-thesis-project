@@ -7,7 +7,7 @@ import {TransactionMiddleware} from './middleware/transactionMiddleware';
 import {RollupMiddleware} from './middleware/rollupMiddleware';
 import {Services} from './typings/services';
 import {TezosInteractor} from './services/tezosInteractor';
-import { UserMiddleware } from './middleware/usersMiddleware';
+import { UserMiddleware } from './middleware/userMiddleware';
 
 export async function init() {
   const app: Express = express();

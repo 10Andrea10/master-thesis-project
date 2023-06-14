@@ -2,8 +2,9 @@ import {verifySignature as verifySignatureTaquito} from '@taquito/utils';
 import {InMemorySigner} from '@taquito/signer';
 import {Transaction} from '../typings/transaction';
 import {edpkToIntArray} from './binaryConverter';
+import {Deregistration} from '../typings/deregistration';
 
-export function verifySignature(transaction: Transaction): boolean {
+export function verifyTransactionSignature(transaction: Transaction): boolean {
   const binarySource = edpkToIntArray(transaction.source);
   const binaryTarget = edpkToIntArray(transaction.target);
   const amount = transaction.amount;
@@ -16,6 +17,22 @@ export function verifySignature(transaction: Transaction): boolean {
     bufferedInput.toString(),
     transaction.source,
     transaction.signature
+  );
+}
+
+export function verifyDeleteUserSignature(
+  deregistration: Deregistration
+): boolean {
+  const buffer = Buffer.from(
+    deregistration.position < 10
+      ? `0${deregistration.position}`
+      : `${deregistration.position}`,
+    'utf-8'
+  );
+  return verifySignatureTaquito(
+    buffer.toString(),
+    deregistration.publicKeys[deregistration.position],
+    deregistration.signature
   );
 }
 

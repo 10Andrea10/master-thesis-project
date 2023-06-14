@@ -4,6 +4,7 @@ import got from 'got';
 import {TezosInteractor} from '../services/tezosInteractor';
 import {convertProof} from '../utils/proofConverter';
 import {Deregistration} from '../typings/deregistration';
+import {signPayload, verifyDeleteUserSignature} from '../utils/taquito';
 
 export class UserMiddleware {
   constructor(private readonly tezosInteractor: TezosInteractor) {
@@ -14,6 +15,7 @@ export class UserMiddleware {
     const privateSignerKey = request.body.privateSignerKey;
     const signature = request.body.signature;
     const position = request.body.position;
+
     const {publicKeys, balances, nonces} =
       await this.tezosInteractor.getBigMapValues();
     const addressesTreeRoot = await this.tezosInteractor.getMKRoot(
@@ -22,19 +24,23 @@ export class UserMiddleware {
     const balanceNonceTreeRoot = await this.tezosInteractor.getMKRoot(
       'mr_balance_nonce'
     );
-    // TODO: 
-    const rollup = new Deregistration(
-        addressesTreeRoot,
-        balanceNonceTreeRoot,
-        publicKeys,
-        balances,
-        nonces,
-        signature,
-        position
-    );    
-    const zokratesInputs = rollup.toZokratesInput();
+    const deregistration = new Deregistration(
+      addressesTreeRoot,
+      balanceNonceTreeRoot,
+      publicKeys,
+      balances,
+      nonces,
+      position,
+      signature
+    );
+
+    const signatureVerified = verifyDeleteUserSignature(deregistration);
+    if (!signatureVerified) {
+      response.status(400).send('Signature is not valid');
+    }
+    const zokratesInputs = deregistration.toZokratesInput();
     const proof = await got.post(
-      process.env.WEB_ROLLUP_SERVER_URL + '/execute',
+      process.env.WEB_ROLLUP_SERVER_URL + '/deregister',
       {
         body: JSON.stringify(zokratesInputs),
         headers: {'Content-Type': 'text/plain'},
@@ -51,10 +57,23 @@ export class UserMiddleware {
     console.log(proofConverted);
     console.log('\n\n');
 
-    const result = await this.tezosInteractor.callRollUpSmartContract(
-      proofConverted,
-      privateSignerKey
+    // const result = await this.tezosInteractor.callRollUpSmartContract(
+    //   proofConverted,
+    //   privateSignerKey
+    // );
+    // response.status(200).send(result);
+    response.status(200);
+  }
+
+  async signData(request: Request, response: Response): Promise<void> {
+    const privateKeySource: string = request.body.privateSignerKey;
+    const position: number = request.body.position;
+    // NOTE: trick to get the position in the right format, because
+    // at least two digits are required
+    const signature = await signPayload(
+      position < 10 ? '0' + position.toString() : position.toString(),
+      privateKeySource
     );
-    response.status(200).send(result);
+    response.send(signature);
   }
 }

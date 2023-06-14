@@ -10,13 +10,11 @@ export class ZokratesInteractor {
    * @param inputs The zokrates inputs properly formatted.
    * @returns The rollup proof execution.
    */
-  async execute(inputs: string, workDir: string): Promise<ComputationResult> {
+  async run(inputs: string, workDir: string): Promise<ComputationResult> {
     return new Promise<ComputationResult>(resolveCallback => {
       const proc = spawn('zokrates', ['compute-witness', '--abi', '--stdin'], {
         cwd: workDir,
       });
-
-      console.log(inputs.toString());
 
       proc.stdin.write(inputs);
       proc.stdin.end();
@@ -66,7 +64,9 @@ export class ZokratesInteractor {
 
   private readProof(workDir: string): string {
     const proof = readFileSync(workDir + '/proof.json', 'utf8');
+    console.log('Proof generated:');
     console.log(proof);
+    console.log('\n\n\n');
     rmSync(workDir + '/proof.json');
     rmSync(workDir + '/witness');
     rmSync(workDir + '/out.wtns');

@@ -1,6 +1,6 @@
 import {Request, Response} from 'express';
 import {Transaction} from '../typings/transaction';
-import {signPayload, verifySignature} from '../utils/taquito';
+import {signPayload, verifyTransactionSignature} from '../utils/taquito';
 import {b58cdecode, prefix} from '@taquito/utils';
 import {edpkToIntArray} from '../utils/binaryConverter';
 import {MongoInteractor} from '../services/mongoInteractor';
@@ -23,7 +23,7 @@ export class TransactionMiddleware {
       request.body.amount,
       request.body.nonce
     );
-    const signatureVerified = verifySignature(transaction);
+    const signatureVerified = verifyTransactionSignature(transaction);
     if (!signatureVerified) {
       response.status(400).send('Signature is not valid');
     }
@@ -59,7 +59,7 @@ export class TransactionMiddleware {
     );
     const signature = await signPayload(
       bufferedInput.toString(),
-      privateKeySource //'edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt'
+      privateKeySource
     );
     response.send(signature);
   }

@@ -23,7 +23,13 @@ export async function initRoutes(services: Services) {
   );
 
   // Execute a signature
-  router.get('/sign', transactionMiddleware.signData);
+  router.get('/sign/transaction', transactionMiddleware.signData);
+
+  router.get(
+    '/sign/deregister',
+    validateField(['privateSignerKey', 'position']),
+    userMiddleware.signData
+  );
 
   router.delete(
     '/user',

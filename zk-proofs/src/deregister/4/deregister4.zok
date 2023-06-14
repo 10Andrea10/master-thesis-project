@@ -17,6 +17,9 @@ def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8] hashedAccounts, u32[8] 
     log("balance + nonces root generated {}", generatedBalanceNonceRoot);
     assert(balanceNonceRoot == generatedBalanceNonceRoot);
 
+    // TODO: signature check: check that the position has been signed with the private key of the pubkey
+    // at hashedAccounts[position]
+
     // verify that the account is drained from the balance
     assert(balances[position] == 0);
     // verify the accout is not already deregistered
