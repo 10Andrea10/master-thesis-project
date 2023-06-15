@@ -215,14 +215,18 @@ class ZKRollupContract(sp.Contract):
     @sp.entry_point
     def deposit(self, params):
         sp.set_type(params.account_index, sp.TNat)
-        # sp.set_type(params.account_public_key, sp.TKey)
+        sp.set_type(params.account_public_key, sp.TKey)
         # Check sender is the user
-        sp.verify(sp.sender == sp.to_address(params.account_public_key), message = "Sender is different from the sent public key")
+        sp.to_address(sp.implicit_account(sp.hash_key(params.account_public_key)))
+        converted_address = sp.to_address(sp.implicit_account(sp.hash_key(params.account_public_key)))
+        sp.if sp.sender != converted_address:
+            sp.failwith("Sender is different from the sent public key")
         sp.verify(params.account_public_key == self.data.accounts[params.account_index].pub_key, message = "Not authorized to deposit")
         self.data.money_queue[params.account_index] = self.data.money_queue.get(
                 params.account_index,
                 default_value = sp.int(0)
             ) + sp.to_int(sp.utils.mutez_to_nat(sp.amount))
+        
 
 
 sp.add_compilation_target("Rollup", ZKRollupContract())
