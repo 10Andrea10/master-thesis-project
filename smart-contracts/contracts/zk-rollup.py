@@ -226,8 +226,5 @@ class ZKRollupContract(sp.Contract):
                 params.account_index,
                 default_value = sp.int(0)
             ) + sp.to_int(sp.utils.mutez_to_nat(sp.amount))
-        
-    @sp.entrypoint
-    def withdraw(self, params):
 
 sp.add_compilation_target("Rollup", ZKRollupContract())
