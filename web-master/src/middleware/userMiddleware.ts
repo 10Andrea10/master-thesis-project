@@ -150,7 +150,9 @@ export class UserMiddleware {
     // NOTE: trick to get the position in the right format, because
     // at least two digits are required
     const signature = await signPayload(
-      position < 10 ? '0' + position.toString() : position.toString() + userPublicKey,
+      position < 10
+        ? '0' + position.toString()
+        : position.toString() + userPublicKey,
       privateKeySource
     );
     response.send(signature);

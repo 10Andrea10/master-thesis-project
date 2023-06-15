@@ -1,4 +1,8 @@
-import {MichelsonMap, TezosToolkit} from '@taquito/taquito';
+import {
+  MichelsonMap,
+  TezosToolkit,
+  TransactionOperation,
+} from '@taquito/taquito';
 import {hexStringLittleToBigEndian} from '../utils/endianConverter';
 import {Account, AccountsMapValue} from '../typings/smartContract';
 import got from 'got';
@@ -117,13 +121,23 @@ export class TezosInteractor {
       const contract = await this.tezos.contract.at(this.zkRollupContract);
       console.log(`Calling contract: ${this.zkRollupContract}...`);
       // TODO: check if this publicKey messes things up when is undefined
-      const operation = await contract.methods[entrypoint](
-        publicKey,
-        proofConvertedJSON.proof.a,
-        proofConvertedJSON.proof.b,
-        proofConvertedJSON.proof.c,
-        inputsMichelsonMap
-      ).send();
+      let operation: TransactionOperation;
+      if (entrypoint == 'receive_register_proof') {
+        operation = await contract.methods['receive_register_proof'](
+          publicKey,
+          proofConvertedJSON.proof.a,
+          proofConvertedJSON.proof.b,
+          proofConvertedJSON.proof.c,
+          inputsMichelsonMap
+        ).send();
+      } else {
+        operation = await contract.methods[entrypoint](
+          proofConvertedJSON.proof.a,
+          proofConvertedJSON.proof.b,
+          proofConvertedJSON.proof.c,
+          inputsMichelsonMap
+        ).send();
+      }
       console.log(`Waiting for ${operation.hash} to be confirmed...`);
       await operation.confirmation(1);
       console.log(
