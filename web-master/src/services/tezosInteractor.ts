@@ -91,7 +91,8 @@ export class TezosInteractor {
   async callRollUpSmartContract(
     entrypoint: string,
     proofConverted: any,
-    privateKey: string
+    privateKey: string,
+    publicKey?: string
   ): Promise<string> {
     // Convert the proofConverted to a JSON object
     var proofConvertedJSON = JSON.parse(proofConverted);
@@ -115,13 +116,14 @@ export class TezosInteractor {
       );
       const contract = await this.tezos.contract.at(this.zkRollupContract);
       console.log(`Calling contract: ${this.zkRollupContract}...`);
+      // TODO: check if this publicKey messes things up when is undefined
       const operation = await contract.methods[entrypoint](
-          proofConvertedJSON.proof.a,
-          proofConvertedJSON.proof.b,
-          proofConvertedJSON.proof.c,
-          inputsMichelsonMap
-        )
-        .send();
+        publicKey,
+        proofConvertedJSON.proof.a,
+        proofConvertedJSON.proof.b,
+        proofConvertedJSON.proof.c,
+        inputsMichelsonMap
+      ).send();
       console.log(`Waiting for ${operation.hash} to be confirmed...`);
       await operation.confirmation(1);
       console.log(

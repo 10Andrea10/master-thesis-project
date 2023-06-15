@@ -1,13 +1,21 @@
 from "./../../lib/merkleTree" import merkleTreeProof, generateMerkleTree;
 from "./../../lib/concatenator" import concatenateTwoArraysIn256;
 
-
 const u32 TREE_DEPTH = 2;
-const u32 TRANSAC_NUM = 3;
 const u32 ACCOUNT_NUM = 4;
 
-// TODO: add nonces and balances
-def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8] hashedAccounts, u32[8] newAccount, u32[8] balanceNonceRoot, private u32[ACCOUNT_NUM] balances, private u32[ACCOUNT_NUM] nonces, private u32 position) -> (u32[8], u32[8]) {
+const u32[8] EMPTY_ACCOUNT = [
+    1974621841,
+    3881655503,
+    2173465381,
+    598290571,
+    2129109780,
+    559195614,
+    2703600737,
+    1217317262
+];
+
+def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8] hashedAccounts, u32[8] balanceNonceRoot, private u32[ACCOUNT_NUM] balances, private u32[ACCOUNT_NUM] nonces, u32 position, u32[8] newAccount, private u64[8]signature) -> (u32[8], u32[8]) {
 
     // verify that the accounts are the right ones
     u32[8] generatedOldAccountRoot = generateMerkleTree(hashedAccounts, TREE_DEPTH);
@@ -20,9 +28,19 @@ def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8] hashedAccounts, u32[8] 
     log("balance + nonces root generated {}", generatedBalanceNonceRoot);
     assert(balanceNonceRoot == generatedBalanceNonceRoot);
 
+    // TODO: signature check: check that the position has been signed with the private key of the pubkey
+    // of the new account to be added
+
+    // check that the position is not already taken
+    for u32 i in 0..8 {
+        assert(hashedAccounts[position][i] == EMPTY_ACCOUNT[i]);
+    }
+
+    // update the account keys
     u32[ACCOUNT_NUM][8] mut newHashedAccounts = hashedAccounts;
     newHashedAccounts[position] = newAccount;
-
+    
+    // update balances and nonces
     u32[ACCOUNT_NUM] mut newBalances = balances;
     newBalances[position] = 0;
     u32[ACCOUNT_NUM] mut newNonces = nonces;

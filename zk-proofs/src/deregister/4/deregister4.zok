@@ -4,6 +4,19 @@ from "./../../lib/concatenator" import concatenateTwoArraysIn256;
 const u32 TREE_DEPTH = 2;
 const u32 ACCOUNT_NUM = 4;
 
+// This represents the public key of the account edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4
+// Used because it is not possible to have in the smart contract's big map an empty element with key type
+const u32[8] EMPTY_ACCOUNT = [
+    1974621841,
+    3881655503,
+    2173465381,
+    598290571,
+    2129109780,
+    559195614,
+    2703600737,
+    1217317262
+];
+
 def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8] hashedAccounts, u32[8] balanceNonceRoot, private u32[ACCOUNT_NUM] balances, private u32[ACCOUNT_NUM] nonces, u32 position, private u64[8]signature) -> (u32[8], u32[8]) {
 
     // verify that the accounts are the right ones
@@ -25,19 +38,7 @@ def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8] hashedAccounts, u32[8] 
 
     // update the account keys
     u32[ACCOUNT_NUM][8] mut newHashedAccounts = hashedAccounts;
-    // this represents the public key of the account edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4
-    // it is used because it is not possible to have in the smart contract big map an empty element
-    u32[8] emptyAccount = [
-        1974621841,
-        3881655503,
-        2173465381,
-        598290571,
-        2129109780,
-        559195614,
-        2703600737,
-        1217317262
-    ];
-    newHashedAccounts[position] = emptyAccount;
+    newHashedAccounts[position] = EMPTY_ACCOUNT;
 
     // update balances and nonces
     u32[ACCOUNT_NUM] mut newBalances = balances;

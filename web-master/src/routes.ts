@@ -28,7 +28,13 @@ export async function initRoutes(services: Services) {
   router.get(
     '/sign/deregister',
     validateField(['privateSignerKey', 'position']),
-    userMiddleware.signData
+    userMiddleware.signDeregister
+  );
+
+  router.get(
+    '/sign/register',
+    validateField(['privateSignerKey','position', 'userPublicKey']),
+    userMiddleware.signRegister
   );
 
   router.delete(
@@ -36,6 +42,12 @@ export async function initRoutes(services: Services) {
     validateField(['privateSignerKey', 'signature', 'position']),
     userMiddleware.deleteUser
   );
+
+  router.post(
+    '/user',
+    validateField(['privateSignerKey', 'signature', 'position', 'userPublicKey']),
+    userMiddleware.addUser
+  )
 }
 
 // Middleware to validate the presence of fields in the request body

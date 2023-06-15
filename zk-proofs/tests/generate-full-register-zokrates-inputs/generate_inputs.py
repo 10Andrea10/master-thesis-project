@@ -4,8 +4,6 @@ from pytezos.crypto.encoding import base58_decode
 
 
 def decode_pubkey(pubkey: str) -> bytearray:
-    if pubkey == "":
-        return bytearray()
     return base58_decode(str.encode(pubkey))
 
 
@@ -71,11 +69,11 @@ if __name__ == "__main__":
     pubkeys = [
         "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4",   # alice
         "edpkvGfYw3LyB1UcCahKQk4rF2tvbMUk8GFiTuMjL75uGXrpvKXhjn",   # bob
-        "",
-        "edpkvS6TDSWcqqj3EJi3NRrCMyN7oNw1B3Hp37R19tMThqM8YNhAuS",   # dave
+        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",   # deregistered
+        "edpkvS6TDSWcqqj3EJi3NRrCMyN7oNw1B3Hp37R19tMThqM8YNhAuS",   # jane
     ]
 
-    newUser = "edpktt6t2ENhxiQqun6bXPPWC6tFVvNPTDRh1gEPGX4BgDgbDnmGzP"
+    newUser = "edpkuT1QYPYbLLQz9dXhQS33ncsixxeGHbNGmntPTR4VBbWmskHPrV" # joe
     newUserDecoded = decode_pubkey(newUser)
     newuserFormatted = byte32_to_u32_array8(newUserDecoded)
 
@@ -83,13 +81,7 @@ if __name__ == "__main__":
 
     formatted_accounts = [byte32_to_u32_array8(x) for x in decoded_pubkeys]
 
-    # account_root = calculate_tree_root(decoded_pubkeys)
-
-    # NOTE: this root is fixed because I am unable to generate it from python code. It is taken fromm a zokrates log.
-    account_root = [
-        "0xa0e4eebd", "0x17d32ef5", "0x059046f2",
-        "0x420eab89", "0x433a4cd4", "0xbed85a13", "0xf5beaeaa", "0x15db44ed"
-    ]
+    account_root = calculate_tree_root(decoded_pubkeys)
 
     balances = [
         "0x2DC6C0",  # 3000000
@@ -100,14 +92,20 @@ if __name__ == "__main__":
 
     # balance_root = calculate_tree_root([str_to_bytes(x, 16) for x in balances])
 
+    # NOTE: the nonce for the deregistered one is 0. Future use.
     nonces = [
-        "0x2",
         "0x1",
         "0x1",
+        "0x0",
         "0x1",
     ]
 
     # nonces_root = calculate_tree_root([str_to_bytes(x, 16) for x in nonces])
+
+    # NOTE: this signature is a fake, not yet checked in the middleware
+    signature = "edsigterWW8Zo4MaL5TnvNNv7eSyUhPm4Zv9ziEj2dgYVeXrETdgEtKr7XmdSxrLYmDSEoXLaptK9pJsgwLm7Wwaebrxox1UQM1"
+    decoded_signature = decode_signature(signature)
+
 
     concatenatedBalancesNonces = concatenate_two_arrays_in_256(balances, nonces)
 
@@ -117,11 +115,12 @@ if __name__ == "__main__":
     obj = json.dumps([
         account_root,
         formatted_accounts,
-        newuserFormatted,
         concatenatedBalancesNoncesTreeRoot,
         balances,
         nonces,
-        "0x2"
+        "0x2",
+        newuserFormatted,
+        decoded_signature
     ], indent=4)
 
     with open("sampleZokinput.json", "w") as outfile:

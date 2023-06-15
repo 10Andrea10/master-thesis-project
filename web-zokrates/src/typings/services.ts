@@ -1,11 +1,11 @@
 import {Router} from 'express';
 import {ExecutorMiddleware} from '../middleware/executorMiddleware';
-import { DeregisterMiddleware } from '../middleware/deregisterMiddleware';
+import { UserMiddleware } from '../middleware/userMiddleware';
 
 export type Services = {
   router: Router;
   executorMiddleware: ExecutorMiddleware;
-  deregisterMiddleware: DeregisterMiddleware;
+  userMiddleware: UserMiddleware;
 };
 
 export type ComputationResult = {

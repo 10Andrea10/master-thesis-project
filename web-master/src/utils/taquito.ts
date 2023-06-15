@@ -3,6 +3,7 @@ import {InMemorySigner} from '@taquito/signer';
 import {Transaction} from '../typings/transaction';
 import {edpkToIntArray} from './binaryConverter';
 import {Deregistration} from '../typings/deregistration';
+import {Registration} from '../typings/registration';
 
 export function verifyTransactionSignature(transaction: Transaction): boolean {
   const binarySource = edpkToIntArray(transaction.source);
@@ -33,6 +34,22 @@ export function verifyDeleteUserSignature(
     buffer.toString(),
     deregistration.publicKeys[deregistration.position],
     deregistration.signature
+  );
+}
+
+export function verifyRegisterUserSignature(
+  registration: Registration
+): boolean {
+  const buffer = Buffer.from(
+    registration.position < 10
+      ? `0${registration.position}`
+      : `${registration.position}` + registration.userPublicKey,
+    'utf-8'
+  );
+  return verifySignatureTaquito(
+    buffer.toString(),
+    registration.userPublicKey,
+    registration.signature
   );
 }
 

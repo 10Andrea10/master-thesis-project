@@ -100,7 +100,8 @@ if __name__ == "__main__":
         "0x1",
     ]
 
-    # NOTE: this signature is a fake, not yet checked in the middleware
+    # NOTE: this signature is a fake, pls generate a valid one with
+    # the private key of edpktt6t2ENhxiQqun6bXPPWC6tFVvNPTDRh1gEPGX4BgDgbDnmGzP
     signature = "edsigterWW8Zo4MaL5TnvNNv7eSyUhPm4Zv9ziEj2dgYVeXrETdgEtKr7XmdSxrLYmDSEoXLaptK9pJsgwLm7Wwaebrxox1UQM1"
 
     decoded_signature = decode_signature(signature)
