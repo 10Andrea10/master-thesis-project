@@ -53,7 +53,7 @@ class ZKRollupContract(sp.Contract):
                 6: sp.bls12_381_fr("0xC7F3A80F00000000000000000000000000000000000000000000000000000000"),
                 7: sp.bls12_381_fr("0x5B9AE47900000000000000000000000000000000000000000000000000000000"),
             },
-            money_queue = sp.map(
+            deposit_queue = sp.map(
                 l = {},
                 tkey = sp.TNat,
                 tvalue = sp.TInt
@@ -222,11 +222,12 @@ class ZKRollupContract(sp.Contract):
         sp.if sp.sender != converted_address:
             sp.failwith("Sender is different from the sent public key")
         sp.verify(params.account_public_key == self.data.accounts[params.account_index].pub_key, message = "Not authorized to deposit")
-        self.data.money_queue[params.account_index] = self.data.money_queue.get(
+        self.data.deposit_queue[params.account_index] = self.data.deposit_queue.get(
                 params.account_index,
                 default_value = sp.int(0)
             ) + sp.to_int(sp.utils.mutez_to_nat(sp.amount))
         
-
+    @sp.entrypoint
+    def withdraw(self, params):
 
 sp.add_compilation_target("Rollup", ZKRollupContract())

@@ -92,6 +92,17 @@ export class TezosInteractor {
     };
   }
 
+  /**
+   * Fetch the deposit queue of the zkRollup contract.
+   * @returns The deposit queue.
+   */
+  async getDepositQueue(): Promise<Map<number, number>> {
+    const contract = await this.tezos.contract.at(this.zkRollupContract);
+    const root = (await contract.storage()) as any;
+    // TODO: check if throws is the deposit queue is empty
+    return root['deposit_queue'].valueMap as Map<number, number>;
+  }
+
   async callRollUpSmartContract(
     entrypoint: string,
     proofConverted: any,

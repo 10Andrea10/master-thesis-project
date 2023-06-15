@@ -2,8 +2,13 @@ import {NextFunction, Request, Response} from 'express';
 import {Services} from './typings/services';
 
 export async function initRoutes(services: Services) {
-  const {router, transactionMiddleware, rollupMiddleware, userMiddleware} =
-    services;
+  const {
+    router,
+    transactionMiddleware,
+    rollupMiddleware,
+    userMiddleware,
+    moneyMiddleware,
+  } = services;
 
   /// Gets all transactions stored in the queue
   router.get('/transactions', transactionMiddleware.getAllTransactions);
@@ -33,7 +38,7 @@ export async function initRoutes(services: Services) {
 
   router.get(
     '/sign/register',
-    validateField(['privateSignerKey','position', 'userPublicKey']),
+    validateField(['privateSignerKey', 'position', 'userPublicKey']),
     userMiddleware.signRegister
   );
 
@@ -43,11 +48,18 @@ export async function initRoutes(services: Services) {
     userMiddleware.deleteUser
   );
 
-  router.post(
+  router.put(
     '/user',
-    validateField(['privateSignerKey', 'signature', 'position', 'userPublicKey']),
+    validateField([
+      'privateSignerKey',
+      'signature',
+      'position',
+      'userPublicKey',
+    ]),
     userMiddleware.addUser
-  )
+  );
+
+  router.post('/deposit', moneyMiddleware.executeDeposits);
 }
 
 // Middleware to validate the presence of fields in the request body

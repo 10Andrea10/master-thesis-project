@@ -8,6 +8,7 @@ import {RollupMiddleware} from './middleware/rollupMiddleware';
 import {Services} from './typings/services';
 import {TezosInteractor} from './services/tezosInteractor';
 import { UserMiddleware } from './middleware/userMiddleware';
+import { MoneyMiddleware } from './middleware/moneyMiddleware';
 
 export async function init() {
   const app: Express = express();
@@ -25,6 +26,7 @@ export async function init() {
     tezosInteractor
   );
   const userMiddleware = new UserMiddleware(tezosInteractor);
+  const moneyMiddleware = new MoneyMiddleware(tezosInteractor);
   const router = express.Router();
 
   const services: Services = {
@@ -33,6 +35,7 @@ export async function init() {
     transactionMiddleware,
     rollupMiddleware,
     userMiddleware,
+    moneyMiddleware
   };
 
   await initRoutes(services);

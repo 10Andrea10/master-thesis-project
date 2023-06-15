@@ -11,7 +11,12 @@ export function convertPublicKeys(publicKeys: string[]): number[][] {
 export function numberArrayToStringArray(numberArray: number[]) {
   return numberArray.map(element => element.toString());
 }
-
+/**
+ * Convert a number to hex. It's a hack because the built-in function
+ * number.toString(16) does not work.
+ * @param number The number to convert to hex.
+ * @returns The hex string with the 0x prefix.
+ */
 export function numberToHex(number: number) {
     // NOTE: this is a hack to convert a number to hex because the built-in
     // function number.toString(16) does not work. )-;
