@@ -53,11 +53,12 @@ class ZKRollupContract(sp.Contract):
                 6: sp.bls12_381_fr("0xC7F3A80F00000000000000000000000000000000000000000000000000000000"),
                 7: sp.bls12_381_fr("0x5B9AE47900000000000000000000000000000000000000000000000000000000"),
             },
+            money_queue = sp.map(
+                l = {},
+                tkey = sp.TNat,
+                tvalue = sp.TInt
+            ),
         )
-
-    @sp.entry_point
-    def fooEntrypoint(self):
-        pass
 
     def initial_checks_mr(self, params):
         # TODO: check if typing is correct
@@ -202,6 +203,26 @@ class ZKRollupContract(sp.Contract):
         # so I pass directly the pubkey of the new user. May be a security risk because the pubkey may be modified
         # by the server sending the proof.
         self.data.accounts[sp.as_nat(sp.to_int(params.received_values[pos_position_value.value]))].pub_key = params.new_user_pub_key
+
+################################################################################################
+#                                                                                              #
+#                                                                                              #
+#                                           DEPOSIT                                            #
+#                                                                                              #
+#                                                                                              #
+################################################################################################
+
+    @sp.entry_point
+    def deposit(self, params):
+        sp.set_type(params.account_index, sp.TNat)
+        # sp.set_type(params.account_public_key, sp.TKey)
+        # Check sender is the user
+        sp.verify(sp.sender == sp.to_address(params.account_public_key), message = "Sender is different from the sent public key")
+        sp.verify(params.account_public_key == self.data.accounts[params.account_index].pub_key, message = "Not authorized to deposit")
+        self.data.money_queue[params.account_index] = self.data.money_queue.get(
+                params.account_index,
+                default_value = sp.int(0)
+            ) + sp.to_int(sp.utils.mutez_to_nat(sp.amount))
 
 
 sp.add_compilation_target("Rollup", ZKRollupContract())
