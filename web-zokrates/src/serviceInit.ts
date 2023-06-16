@@ -3,7 +3,7 @@ import express, {Express} from 'express';
 import BodyParser from 'body-parser';
 import {initRoutes} from './routes';
 import {Services} from './typings/services';
-import { ExecutorMiddleware } from './middleware/executorMiddleware';
+import { RollupMiddleware } from './middleware/rollupMiddleware';
 import { ZokratesInteractor } from './services/zokratesInteractor';
 import { UserMiddleware } from './middleware/userMiddleware';
 
@@ -16,15 +16,15 @@ export async function init() {
 
   // Initialize the services
   const zokratesInteractor = new ZokratesInteractor();
-  const executorMiddleware = new ExecutorMiddleware(zokratesInteractor);
-  const deregisterMiddleware = new UserMiddleware(zokratesInteractor);
+  const rollupMiddleware = new RollupMiddleware(zokratesInteractor);
+  const userMiddleware = new UserMiddleware(zokratesInteractor);
 
   const router = express.Router();
 
   const services: Services = {
     router,
-    executorMiddleware,
-    userMiddleware: deregisterMiddleware
+    rollupMiddleware,
+    userMiddleware
   };
 
   await initRoutes(services);

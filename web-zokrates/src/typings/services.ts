@@ -1,10 +1,10 @@
 import {Router} from 'express';
-import {ExecutorMiddleware} from '../middleware/executorMiddleware';
+import {RollupMiddleware} from '../middleware/rollupMiddleware';
 import { UserMiddleware } from '../middleware/userMiddleware';
 
 export type Services = {
   router: Router;
-  executorMiddleware: ExecutorMiddleware;
+  rollupMiddleware: RollupMiddleware;
   userMiddleware: UserMiddleware;
 };
 

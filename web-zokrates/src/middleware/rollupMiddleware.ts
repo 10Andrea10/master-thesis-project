@@ -1,7 +1,7 @@
 import {Request, Response} from 'express';
 import {ZokratesInteractor} from '../services/zokratesInteractor';
 
-export class ExecutorMiddleware {
+export class RollupMiddleware {
   private readonly workDir: string = './src/zokrates';
   constructor(private readonly zokratesInteractor: ZokratesInteractor) {
     this.executeRollup = this.executeRollup.bind(this);
@@ -9,12 +9,12 @@ export class ExecutorMiddleware {
 
   async executeRollup(request: Request, response: Response): Promise<void> {
     console.log(
-      '[ExecutorMiddleware] Executing rollup with request: ',
+      '[RollupMiddleware] Executing rollup with request: ',
       request.body
     );
     const computationalResult = await this.zokratesInteractor.run(
       request.body,
-      './src/zokratesRollup'
+      './src/zokrates/rollup'
     );
     if (computationalResult.success) {
       response.send(computationalResult.result);

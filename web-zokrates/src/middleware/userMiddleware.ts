@@ -14,7 +14,7 @@ export class UserMiddleware {
     );
     const computationalResult = await this.zokratesInteractor.run(
       request.body,
-      './src/zokratesDeregister'
+      './src/zokrates/deregister'
     );
     if (computationalResult.success) {
       response.send(computationalResult.result);
@@ -30,7 +30,7 @@ export class UserMiddleware {
     );
     const computationalResult = await this.zokratesInteractor.run(
       request.body,
-      './src/zokratesRegister'
+      './src/zokrates/register'
     );
     if (computationalResult.success) {
       response.send(computationalResult.result);
