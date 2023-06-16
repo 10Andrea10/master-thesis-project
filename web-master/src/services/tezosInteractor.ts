@@ -99,8 +99,12 @@ export class TezosInteractor {
   async getDepositQueue(): Promise<Map<number, number>> {
     const contract = await this.tezos.contract.at(this.zkRollupContract);
     const root = (await contract.storage()) as any;
-    // TODO: check if throws is the deposit queue is empty
-    return root['deposit_queue'].valueMap as Map<number, number>;
+    const buggedMap = root['deposit_queue'];
+    const fixedMap = new Map<number, number>();
+    buggedMap.forEach((value: any, key: any) => {
+      fixedMap.set(parseInt(key), parseInt(value));
+    });
+    return fixedMap;
   }
 
   async callRollUpSmartContract(

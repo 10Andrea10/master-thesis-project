@@ -6,6 +6,7 @@ import {Services} from './typings/services';
 import { RollupMiddleware } from './middleware/rollupMiddleware';
 import { ZokratesInteractor } from './services/zokratesInteractor';
 import { UserMiddleware } from './middleware/userMiddleware';
+import { MoneyMiddleware } from './middleware/moneyMiddleware';
 
 export async function init() {
   const app: Express = express();
@@ -18,13 +19,15 @@ export async function init() {
   const zokratesInteractor = new ZokratesInteractor();
   const rollupMiddleware = new RollupMiddleware(zokratesInteractor);
   const userMiddleware = new UserMiddleware(zokratesInteractor);
+  const moneyMiddleware = new MoneyMiddleware(zokratesInteractor);
 
   const router = express.Router();
 
   const services: Services = {
     router,
     rollupMiddleware,
-    userMiddleware
+    userMiddleware,
+    moneyMiddleware,
   };
 
   await initRoutes(services);

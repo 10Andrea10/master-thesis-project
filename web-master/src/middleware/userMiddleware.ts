@@ -55,6 +55,7 @@ export class UserMiddleware {
     );
     if (proof.statusCode !== 200) {
       response.status(proof.statusCode).send(proof.body);
+      return;
     }
 
     const proofConverted = convertProof(proof.body);
@@ -114,6 +115,7 @@ export class UserMiddleware {
     );
     if (proof.statusCode !== 200) {
       response.status(proof.statusCode).send(proof.body);
+      return;
     }
 
     const proofConverted = convertProof(proof.body);
