@@ -53,10 +53,14 @@ class ZKRollupContract(sp.Contract):
                 6: sp.bls12_381_fr("0xC7F3A80F00000000000000000000000000000000000000000000000000000000"),
                 7: sp.bls12_381_fr("0x5B9AE47900000000000000000000000000000000000000000000000000000000"),
             },
+            # TODO: remove initial values. They are here just for testing.
             deposit_queue = sp.map(
-                l = {},
+                l = {
+                    2 : sp.mutez(555),
+                    3 : sp.mutez(666),
+                },
                 tkey = sp.TNat,
-                tvalue = sp.TInt
+                tvalue = sp.TMutez
             ),
         )
 
@@ -224,7 +228,28 @@ class ZKRollupContract(sp.Contract):
         sp.verify(params.account_public_key == self.data.accounts[params.account_index].pub_key, message = "Not authorized to deposit")
         self.data.deposit_queue[params.account_index] = self.data.deposit_queue.get(
                 params.account_index,
-                default_value = sp.int(0)
-            ) + sp.to_int(sp.utils.mutez_to_nat(sp.amount))
+                default_value = sp.mutez(0)
+            ) + sp.amount
+    
+    @sp.entry_point
+    def receive_deposit_proof(self, params):
+        self.initial_checks_mr(params)
+
+        # TODO: put an if based on the number of accounts
+        self.deposit_with_4_accounts(params)
+    
+    def deposit_with_4_accounts(self, params):
+        entry_point = "verify_deposit_4"
+        verification_contract = "KT1XbemZ7U57363QdE8YCc7ozb6UHqwi7YmX"
+
+        self.send_verification(params, verification_contract, entry_point)
+        pos_first_element_new_root_balances_nonces = sp.local('pos_first_element_new_root_balances_nonces', sp.int(16))
+        sp.for i in sp.range(0, 8):
+            self.data.mr_balance_nonce[i] = params.received_values[i + pos_first_element_new_root_balances_nonces.value ]
+        sp.for i in self.data.deposit_queue.keys():
+            self.data.accounts[i].mutez_balance += self.data.deposit_queue.get(i)
+            del self.data.deposit_queue[i]
+        
+
 
 sp.add_compilation_target("Rollup", ZKRollupContract())

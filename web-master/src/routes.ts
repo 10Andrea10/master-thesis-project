@@ -59,7 +59,11 @@ export async function initRoutes(services: Services) {
     userMiddleware.addUser
   );
 
-  router.post('/deposit', moneyMiddleware.executeDeposits);
+  router.post(
+    '/deposit',
+    validateField(['privateSignerKey']),
+    moneyMiddleware.executeDeposits
+  );
 }
 
 // Middleware to validate the presence of fields in the request body
