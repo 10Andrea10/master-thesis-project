@@ -1,0 +1,27 @@
+from "./../../lib/merkleTree" import merkleTreeProof, generateMerkleTree;
+from "./../../lib/concatenator" import concatenateTwoArraysIn256;
+
+const u32 TREE_DEPTH = 2;
+const u32 ACCOUNT_NUM = 4;
+const u32 DEPOSIT_NUM = 2;
+
+def main(u32[8] accountRoot, u32[8] balanceNonceRoot, private u32[ACCOUNT_NUM] balances, private u32[ACCOUNT_NUM] nonces, private u32[DEPOSIT_NUM] indexes, private u32[DEPOSIT_NUM] amounts) -> u32[8] {
+
+    // verify that the balances + nonces inputed are the right ones
+    u32[ACCOUNT_NUM][8] balancesNonces = concatenateTwoArraysIn256(balances, nonces);
+    u32[8] generatedBalanceNonceRoot = generateMerkleTree(balancesNonces, TREE_DEPTH);
+    log("balance + nonces root generated {}", generatedBalanceNonceRoot);
+    assert(balanceNonceRoot == generatedBalanceNonceRoot);
+
+    // update balances
+    u32[ACCOUNT_NUM] mut newBalances = balances;
+    for u32 i in 0..DEPOSIT_NUM {
+        newBalances[indexes[i]] = newBalances[indexes[i]] + amounts[i];
+    }
+
+    u32[ACCOUNT_NUM][8] newBalancesNonces = concatenateTwoArraysIn256(newBalances, nonces);
+    u32[8] newBalancesNoncesRoot = generateMerkleTree(newBalancesNonces, TREE_DEPTH);
+    log("new balance + nonces root generated {}", newBalancesNoncesRoot);
+
+    return (newBalancesNoncesRoot);
+}
