@@ -64,7 +64,6 @@ export class UserMiddleware {
     console.log(proofConverted);
     console.log('\n\n');
 
-    // TODO: call deregister smart contract entrypoint
     const result = await this.tezosInteractor.callRollUpSmartContract(
       'receive_deregister_proof',
       proofConverted,

@@ -1,7 +1,6 @@
 import {Request, Response} from 'express';
 import {Transaction} from '../typings/transaction';
 import {signPayload, verifyTransactionSignature} from '../utils/taquito';
-import {b58cdecode, prefix} from '@taquito/utils';
 import {edpkToIntArray} from '../utils/binaryConverter';
 import {MongoInteractor} from '../services/mongoInteractor';
 

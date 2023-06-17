@@ -4,7 +4,7 @@ import {
   TransactionOperation,
 } from '@taquito/taquito';
 import {hexStringLittleToBigEndian} from '../utils/endianConverter';
-import {Account, AccountsMapValue} from '../typings/smartContract';
+import {AccountsMapValue} from '../typings/smartContract';
 import got from 'got';
 import {InMemorySigner} from '@taquito/signer';
 
@@ -30,9 +30,9 @@ export class TezosInteractor {
     const root = (await contract.storage()) as any;
     const mkRootAddressesMap = root[fieldName].valueMap as Map<number, string>;
 
-    var finalArray = [];
+    const finalArray = [];
     for (const [, value] of mkRootAddressesMap) {
-      var converted = hexStringLittleToBigEndian(value);
+      const converted = hexStringLittleToBigEndian(value);
       finalArray.push(parseInt(converted, 16));
     }
     return finalArray;
@@ -114,7 +114,7 @@ export class TezosInteractor {
     publicKey?: string
   ): Promise<string> {
     // Convert the proofConverted to a JSON object
-    var proofConvertedJSON = JSON.parse(proofConverted);
+    const proofConvertedJSON = JSON.parse(proofConverted);
 
     const inputsConverted = proofConvertedJSON.inputs;
     const inputsMichelsonMap = new MichelsonMap();
@@ -135,7 +135,6 @@ export class TezosInteractor {
       );
       const contract = await this.tezos.contract.at(this.zkRollupContract);
       console.log(`Calling contract: ${this.zkRollupContract}...`);
-      // TODO: check if this publicKey messes things up when is undefined
       let operation: TransactionOperation;
       if (entrypoint == 'receive_register_proof') {
         operation = await contract.methods['receive_register_proof'](
