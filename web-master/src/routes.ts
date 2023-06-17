@@ -42,6 +42,12 @@ export async function initRoutes(services: Services) {
     userMiddleware.signRegister
   );
 
+  router.get(
+    '/sign/withdraw',
+    validateField(['privateSignerKey', 'position', 'amount']),
+    moneyMiddleware.signWithdraw
+  );
+
   router.delete(
     '/user',
     validateField(['privateSignerKey', 'signature', 'position']),
@@ -63,6 +69,12 @@ export async function initRoutes(services: Services) {
     '/deposit',
     validateField(['privateSignerKey']),
     moneyMiddleware.executeDeposits
+  );
+
+  router.post(
+    '/withdraw',
+    validateField(['privateSignerKey', 'position', 'amount', 'signature']),
+    moneyMiddleware.withdraw
   );
 }
 

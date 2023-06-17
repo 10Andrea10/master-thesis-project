@@ -11,4 +11,6 @@ export async function initRoutes(services: Services) {
   router.post('/register', userMiddleware.registerUser);
 
   router.post('/deposit', moneyMiddleware.executeDeposit);
+
+  router.post('/withdraw', moneyMiddleware.executeWithdraw);
 }

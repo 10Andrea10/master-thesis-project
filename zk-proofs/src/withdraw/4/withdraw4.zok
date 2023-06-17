@@ -1,0 +1,33 @@
+from "./../../lib/merkleTree" import merkleTreeProof, generateMerkleTree;
+from "./../../lib/concatenator" import concatenateTwoArraysIn256;
+
+const u32 TREE_DEPTH = 2;
+const u32 ACCOUNT_NUM = 4;
+
+def main(u32[8] accountRoot, u32[8] balanceNonceRoot, private u32[ACCOUNT_NUM] balances, private u32[ACCOUNT_NUM] nonces, u32 position, u32 amount, private u64[8]signature) -> u32[8] {
+
+    // verify that the balances + nonces inputed are the right ones
+    u32[ACCOUNT_NUM][8] balancesNonces = concatenateTwoArraysIn256(balances, nonces);
+    u32[8] generatedBalanceNonceRoot = generateMerkleTree(balancesNonces, TREE_DEPTH);
+    log("balance + nonces root generated {}", generatedBalanceNonceRoot);
+    assert(balanceNonceRoot == generatedBalanceNonceRoot);
+
+    // TODO: signature check: check that the position has been signed with the private key of the pubkey
+    // at hashedAccounts[position]. This will confirm that the user is the owner of the account
+
+    // verify that the amount is not too big
+    assert(amount <= balances[position]);
+    // verify amount is not zero
+    assert(amount > 0);
+
+    // update the balance
+    u32[ACCOUNT_NUM] mut newBalances = balances;
+    newBalances[position] = newBalances[position] - amount;
+
+    u32[ACCOUNT_NUM][8] newBalancesNonces = concatenateTwoArraysIn256(newBalances, nonces);
+    u32[8] balancesNoncesRoot = generateMerkleTree(newBalancesNonces, TREE_DEPTH);
+    log("new balance + nonces root generated {}", balancesNoncesRoot);
+    
+    return balancesNoncesRoot;
+}
+

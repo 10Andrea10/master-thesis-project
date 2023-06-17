@@ -246,6 +246,40 @@ class ZKRollupContract(sp.Contract):
             self.data.accounts[i].mutez_balance += self.data.deposit_queue.get(i)
             del self.data.deposit_queue[i]
         
+################################################################################################
+#                                                                                              #
+#                                                                                              #
+#                                           WITHDRAW                                           #
+#                                                                                              #
+#                                                                                              #
+################################################################################################
+
+
+    @sp.entry_point
+    def receive_withdraw_proof(self, params):
+        self.initial_checks_mr(params)
+
+        # TODO: put an if based on the number of accounts
+        self.withdraw_with_4_accounts(params)
+    
+    def withdraw_with_4_accounts(self, params):
+        entry_point = "verify_withdraw_4"
+        verification_contract = "KT1RNqm9DDSYDBj1XBHj4qz1TpgnMmomuTgq"
+
+        self.send_verification(params, verification_contract, entry_point)
+        # TODO: edit indexes if proof changes
+        pos_first_element_new_root_balances_nonces = sp.local('pos_first_element_new_root_balances_nonces', sp.int(18))
+        pos_position = sp.local('pos_position', sp.int(16))
+        pos_amount = sp.local('pos_amount', sp.int(17))
+
+        sp.for i in sp.range(0, 8):
+            self.data.mr_balance_nonce[i] = params.received_values[i + pos_first_element_new_root_balances_nonces.value ]
+        self.data.accounts[sp.as_nat(sp.to_int(params.received_values[pos_position.value]))].mutez_balance -= sp.utils.nat_to_mutez(sp.as_nat(sp.to_int(params.received_values[pos_amount.value])))
+
+        # send the amount to the user
+        destination_address = sp.to_address(sp.implicit_account(sp.hash_key(self.data.accounts[sp.as_nat(sp.to_int(params.received_values[pos_position.value]))].pub_key)))
+        amount = sp.utils.nat_to_mutez(sp.as_nat(sp.to_int(params.received_values[pos_amount.value])))
+        sp.send(destination_address, amount)
 
 
 sp.add_compilation_target("Rollup", ZKRollupContract())
