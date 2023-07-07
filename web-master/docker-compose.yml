@@ -3,13 +3,13 @@ services:
   node:
     image: node:20.2.0
     working_dir: /home/node/app
-    user: node
+    # user: node
     environment:
       - MONGODB_CONNSTRING=mongodb://manager:secretpassw@mongodb
       - MONGODB_DBNAME=transactionsDB
       - MONGODB_COLLECTION=transactions
       - WEB_ROLLUP_SERVER_URL=http://172.17.0.1:3005
-      - ZK_ROLLUP_ADDRESS=KT1PTrMyqiubEGdbEUvAjZ4E3sJF39A1B7tv
+      - ZK_ROLLUP_ADDRESS=KT1CXMTqrEvrmLHscPcHt2kFkwG1GYxv6pEr
       - TEZOS_RPC_NODE_URL=https://ghostnet.ecadinfra.com/
       - TEZOS_API_TZSTATS=https://api.ghost.tzstats.com/
     volumes:

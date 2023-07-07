@@ -6,8 +6,14 @@ const u32 TREE_DEPTH = 2;
 const u32 TRANSAC_NUM = 3;
 const u32 ACCOUNT_NUM = 4;
 
-def main(private u32[ACCOUNT_NUM] balances, private u32[ACCOUNT_NUM] nonces) -> u32[8] {
-    // verify that the balances + nonces inputed are the right ones
+// def main(u32[ACCOUNT_NUM][8]hashedAccounts) -> u32[8] {
+//     u32[8] generatedAccountRoot = generateMerkleTree(hashedAccounts, TREE_DEPTH);
+//     log("account root generated {}", generatedAccountRoot);
+//     return generatedAccountRoot;
+// }
+
+def main(u32[ACCOUNT_NUM]balances, u32[ACCOUNT_NUM]nonces) -> u32[8] {
+
     u32[ACCOUNT_NUM][8] balancesNonces = concatenateTwoArraysIn256(balances, nonces);
     u32[8] generatedBalanceNonceRoot = generateMerkleTree(balancesNonces, TREE_DEPTH);
     log("balance + nonces root generated {}", generatedBalanceNonceRoot);

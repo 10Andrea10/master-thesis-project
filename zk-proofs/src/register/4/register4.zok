@@ -5,14 +5,14 @@ const u32 TREE_DEPTH = 2;
 const u32 ACCOUNT_NUM = 4;
 
 const u32[8] EMPTY_ACCOUNT = [
-    1974621841,
-    3881655503,
-    2173465381,
-    598290571,
-    2129109780,
-    559195614,
-    2703600737,
-    1217317262
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
 ];
 
 def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8] hashedAccounts, u32[8] balanceNonceRoot, private u32[ACCOUNT_NUM] balances, private u32[ACCOUNT_NUM] nonces, u32 position, u32[8] newAccount, private u64[8]signature) -> (u32[8], u32[8]) {

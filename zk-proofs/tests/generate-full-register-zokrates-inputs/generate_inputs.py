@@ -4,6 +4,9 @@ from pytezos.crypto.encoding import base58_decode
 
 
 def decode_pubkey(pubkey: str) -> bytearray:
+    if pubkey == "":
+        # create a bitearray of length 32 filled with 0s
+        return bytearray(32)
     return base58_decode(str.encode(pubkey))
 
 
@@ -69,7 +72,7 @@ if __name__ == "__main__":
     pubkeys = [
         "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4",   # alice
         "edpkvGfYw3LyB1UcCahKQk4rF2tvbMUk8GFiTuMjL75uGXrpvKXhjn",   # bob
-        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",   # deregistered
+        "",   # deregistered
         "edpkvS6TDSWcqqj3EJi3NRrCMyN7oNw1B3Hp37R19tMThqM8YNhAuS",   # jane
     ]
 

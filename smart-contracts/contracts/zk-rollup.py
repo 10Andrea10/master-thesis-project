@@ -6,42 +6,42 @@ class ZKRollupContract(sp.Contract):
             accounts =  sp.big_map(
                 l = {
                     0 : sp.record(
-                        pub_key = sp.key("edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4"),
+                        pub_key = sp.none,
                         mutez_balance = sp.mutez(0),
                         nonce = sp.nat(0),
                     ), 
                     1 : sp.record(
-                        pub_key = sp.key("edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4"),
+                        pub_key = sp.none,
                         mutez_balance = sp.mutez(0),
                         nonce = sp.nat(0),
                     ),
                     2 : sp.record(
-                        pub_key = sp.key("edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4"),
+                        pub_key = sp.none,
                         mutez_balance = sp.mutez(0),
                         nonce = sp.nat(0),
                     ), 
                     3 : sp.record(
-                        pub_key = sp.key("edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4"),
+                        pub_key = sp.none,
                         mutez_balance = sp.mutez(0),
                         nonce = sp.nat(0),
                     ), 
                 },
                 tkey = sp.TNat,
                 tvalue = sp.TRecord(
-                    pub_key = sp.TKey,
+                    pub_key = sp.TOption(sp.TKey),
                     mutez_balance = sp.TMutez,
                     nonce = sp.TNat,
                 )
             ),
             mr_pub_key = {
-                0: sp.bls12_381_fr("0x7FB0145600000000000000000000000000000000000000000000000000000000"),
-                1: sp.bls12_381_fr("0xD5E7C52000000000000000000000000000000000000000000000000000000000"),
-                2: sp.bls12_381_fr("0x8015048D00000000000000000000000000000000000000000000000000000000"),
-                3: sp.bls12_381_fr("0xA170806700000000000000000000000000000000000000000000000000000000"),
-                4: sp.bls12_381_fr("0x0AE3F99D00000000000000000000000000000000000000000000000000000000"),
-                5: sp.bls12_381_fr("0x51E1728800000000000000000000000000000000000000000000000000000000"),
-                6: sp.bls12_381_fr("0x9841816D00000000000000000000000000000000000000000000000000000000"),
-                7: sp.bls12_381_fr("0x4735497D00000000000000000000000000000000000000000000000000000000"),
+                0: sp.bls12_381_fr("0x4E1156DB00000000000000000000000000000000000000000000000000000000"),
+                1: sp.bls12_381_fr("0xC1D4FD0000000000000000000000000000000000000000000000000000000000"),
+                2: sp.bls12_381_fr("0x2B895CF800000000000000000000000000000000000000000000000000000000"),
+                3: sp.bls12_381_fr("0xA8C95AF300000000000000000000000000000000000000000000000000000000"),
+                4: sp.bls12_381_fr("0xECAA899200000000000000000000000000000000000000000000000000000000"),
+                5: sp.bls12_381_fr("0xA9D0EBB100000000000000000000000000000000000000000000000000000000"),
+                6: sp.bls12_381_fr("0x6A60DE6C00000000000000000000000000000000000000000000000000000000"),
+                7: sp.bls12_381_fr("0x715D8B7400000000000000000000000000000000000000000000000000000000"),
                 },
             mr_balance_nonce = {
                 0: sp.bls12_381_fr("0xFD0980C700000000000000000000000000000000000000000000000000000000"),
@@ -148,7 +148,7 @@ class ZKRollupContract(sp.Contract):
 
     def deregister_with_4_accounts(self, params):
         entry_point = "verify_deregister_4"
-        verification_contract = "KT1GHx1UEG3X14w4yybnNhux7HcmKkj42F8V"
+        verification_contract = "KT1HztMKaPu7LET3Qj5P1gGMurv3tPArFdjD"
 
         self.send_verification(params, verification_contract, entry_point)
         # TODO: edit indexes if proof changes
@@ -161,9 +161,7 @@ class ZKRollupContract(sp.Contract):
 
         self.data.accounts[sp.as_nat(sp.to_int(params.received_values[pos_position_value.value]))].mutez_balance = sp.mutez(0)
         self.data.accounts[sp.as_nat(sp.to_int(params.received_values[pos_position_value.value]))].nonce = sp.nat(0)
-        # This is a valid pulic key, and it's the one used for the tests. It's because it is not possible to 
-        # have a public key with all 0s.
-        self.data.accounts[sp.as_nat(sp.to_int(params.received_values[pos_position_value.value]))].pub_key = sp.key("edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4")
+        self.data.accounts[sp.as_nat(sp.to_int(params.received_values[pos_position_value.value]))].pub_key = sp.none
 
 
 
@@ -186,7 +184,7 @@ class ZKRollupContract(sp.Contract):
 
     def register_with_4_accounts(self, params):
         entry_point = "verify_register_4"
-        verification_contract = "KT1DJHmfU1nRTweMraKsvgzxb7ZxRLZKa5KP"
+        verification_contract = "KT1PTq7B96pHeviRaJZ4hq84fZYPcWfQ4Rcp"
 
         self.send_verification(params, verification_contract, entry_point)
         # TODO: edit indexes if proof changes
@@ -221,7 +219,8 @@ class ZKRollupContract(sp.Contract):
         converted_address = sp.to_address(sp.implicit_account(sp.hash_key(params.account_public_key)))
         sp.if sp.sender != converted_address:
             sp.failwith("Sender is different from the sent public key")
-        sp.verify(params.account_public_key == self.data.accounts[params.account_index].pub_key, message = "Not authorized to deposit")
+        sp.verify(self.data.accounts[params.account_index].pub_key.is_some())
+        sp.verify(params.account_public_key == self.data.accounts[params.account_index].pub_key.open_some() , message = "Not authorized to deposit")
         self.data.deposit_queue[params.account_index] = self.data.deposit_queue.get(
                 params.account_index,
                 default_value = sp.mutez(0)
@@ -277,7 +276,7 @@ class ZKRollupContract(sp.Contract):
         self.data.accounts[sp.as_nat(sp.to_int(params.received_values[pos_position.value]))].mutez_balance -= sp.utils.nat_to_mutez(sp.as_nat(sp.to_int(params.received_values[pos_amount.value])))
 
         # send the amount to the user
-        destination_address = sp.to_address(sp.implicit_account(sp.hash_key(self.data.accounts[sp.as_nat(sp.to_int(params.received_values[pos_position.value]))].pub_key)))
+        destination_address = sp.to_address(sp.implicit_account(sp.hash_key(self.data.accounts[sp.as_nat(sp.to_int(params.received_values[pos_position.value]))].pub_key.open_some())))
         amount = sp.utils.nat_to_mutez(sp.as_nat(sp.to_int(params.received_values[pos_amount.value])))
         sp.send(destination_address, amount)
 
