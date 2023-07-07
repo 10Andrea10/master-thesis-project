@@ -9,7 +9,7 @@ services:
       - MONGODB_DBNAME=transactionsDB
       - MONGODB_COLLECTION=transactions
       - WEB_ROLLUP_SERVER_URL=http://172.17.0.1:3005
-      - ZK_ROLLUP_ADDRESS=KT1CXMTqrEvrmLHscPcHt2kFkwG1GYxv6pEr
+      - ZK_ROLLUP_ADDRESS=KT1FJew3F27MZrpCJBEaWoiSb5YVgSAckaay
       - TEZOS_RPC_NODE_URL=https://ghostnet.ecadinfra.com/
       - TEZOS_API_TZSTATS=https://api.ghost.tzstats.com/
     volumes:

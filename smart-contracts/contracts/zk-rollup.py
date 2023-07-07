@@ -219,8 +219,7 @@ class ZKRollupContract(sp.Contract):
         converted_address = sp.to_address(sp.implicit_account(sp.hash_key(params.account_public_key)))
         sp.if sp.sender != converted_address:
             sp.failwith("Sender is different from the sent public key")
-        sp.verify(self.data.accounts[params.account_index].pub_key.is_some())
-        sp.verify(params.account_public_key == self.data.accounts[params.account_index].pub_key.open_some() , message = "Not authorized to deposit")
+        sp.verify(params.account_public_key == self.data.accounts[params.account_index].pub_key.open_some(message = "No user registered in this position") , message = "Not authorized to deposit")
         self.data.deposit_queue[params.account_index] = self.data.deposit_queue.get(
                 params.account_index,
                 default_value = sp.mutez(0)
