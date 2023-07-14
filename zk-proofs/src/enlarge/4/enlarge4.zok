@@ -1,0 +1,39 @@
+from "./../../lib/merkleTree" import merkleTreeProof, generateMerkleTree;
+from "./../../lib/concatenator" import concatenateTwoArraysIn256;
+
+const u32 TREE_DEPTH = 2;
+const u32 ACCOUNT_NUM = 4;
+const u32 NEW_ACCOUNT_NUM = 8;
+const u32 NEW_TREE_DEPTH = 3;
+
+const u32[4] ZERO_ARRAY = [0, 0, 0, 0];
+const u32[4][8] ZERO_ARRAY_2D = [
+    [0, 0, 0, 0, 0 ,0 ,0 ,0],
+    [0, 0, 0, 0, 0 ,0 ,0 ,0],
+    [0, 0, 0, 0, 0 ,0 ,0 ,0],
+    [0, 0, 0, 0, 0 ,0 ,0 ,0]
+];
+
+def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8] hashedAccounts, u32[8] balanceNonceRoot, private u32[ACCOUNT_NUM] balances, private u32[ACCOUNT_NUM] nonces) -> (u32[8], u32[8]) {
+    // verify that the accounts are the right ones
+    u32[8] generatedOldAccountRoot = generateMerkleTree(hashedAccounts, TREE_DEPTH);
+    assert(accountRoot == generatedOldAccountRoot);
+    log("account root generated {}", generatedOldAccountRoot);
+
+    // verify that the balances + nonces inputed are the right ones
+    u32[ACCOUNT_NUM][8] balancesNonces = concatenateTwoArraysIn256(balances, nonces);
+    u32[8] generatedBalanceNonceRoot = generateMerkleTree(balancesNonces, TREE_DEPTH);
+    log("balance + nonces root generated {}", generatedBalanceNonceRoot);
+    assert(balanceNonceRoot == generatedBalanceNonceRoot);
+
+    // generate the new account root
+    u32[NEW_ACCOUNT_NUM][8] newHashedAccounts = [...hashedAccounts, ...ZERO_ARRAY_2D];
+    u32[8] newAccountRoot = generateMerkleTree(newHashedAccounts, NEW_TREE_DEPTH);
+
+    u32[NEW_ACCOUNT_NUM] newBalances = [...balances, ...ZERO_ARRAY];
+    u32[NEW_ACCOUNT_NUM] newNonces = [...nonces, ...ZERO_ARRAY];
+    u32[NEW_ACCOUNT_NUM][8] newBalancesNonces = concatenateTwoArraysIn256(newBalances, newNonces);
+    u32[8] newBalancesNoncesRoot = generateMerkleTree(newBalancesNonces, NEW_TREE_DEPTH);
+
+    return (newAccountRoot, newBalancesNoncesRoot);
+}

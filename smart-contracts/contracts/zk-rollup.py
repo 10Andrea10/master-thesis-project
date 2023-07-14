@@ -58,10 +58,10 @@ class ZKRollupContract(sp.Contract):
                 tkey = sp.TNat,
                 tvalue = sp.TMutez
             ),
+            accounts_power = sp.nat(2),
         )
 
     def initial_checks_mr(self, params):
-        # TODO: check if typing is correct
         sp.set_type(params.received_values, sp.TBigMap(sp.TInt, sp.TBls12_381_fr))
 
         # Check if the current mr_pub_key is the same as the one received in the proof
@@ -191,7 +191,6 @@ class ZKRollupContract(sp.Contract):
         pos_first_element_new_root_public_keys = sp.local('pos_first_element_new_root_public_keys', sp.int(25))
         pos_first_element_new_root_balances_nonces = sp.local('pos_first_element_new_root_balances_nonces', sp.int(33))
         pos_position_value = sp.local('pos_position_value', sp.int(16))
-        # pos_first_element_new_account_pubkey = sp.local('pos_first_element_new_account_pubkey', sp.int(17))
 
         self.set_mr_data(params, pos_first_element_new_root_balances_nonces, pos_first_element_new_root_public_keys)
         self.data.accounts[sp.as_nat(sp.to_int(params.received_values[pos_position_value.value]))].mutez_balance = sp.mutez(0)

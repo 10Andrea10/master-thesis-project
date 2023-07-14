@@ -9,7 +9,7 @@ export class MoneyMiddleware {
 
   async executeDeposit(request: Request, response: Response): Promise<void> {
     console.log(
-      '[MoneyMiddleware] Executing deposit with request: ',
+      '[MoneyMiddleware] Executing deposit with request:\n ',
       request.body
     );
     const computationalResult = await this.zokratesInteractor.run(
@@ -26,7 +26,7 @@ export class MoneyMiddleware {
 
   async executeWithdraw(request: Request, response: Response): Promise<void> {
     console.log(
-      '[MoneyMiddleware] Executing withdraw with request: ',
+      '[MoneyMiddleware] Executing withdraw with request:\n ',
       request.body
     );
     const computationalResult = await this.zokratesInteractor.run(

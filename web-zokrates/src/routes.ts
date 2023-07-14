@@ -1,7 +1,13 @@
 import {Services} from './typings/services';
 
 export async function initRoutes(services: Services) {
-  const {router, rollupMiddleware, userMiddleware, moneyMiddleware} = services;
+  const {
+    router,
+    rollupMiddleware,
+    userMiddleware,
+    moneyMiddleware,
+    accountsMiddleware,
+  } = services;
 
   // Execute the rollup
   router.post('/execute', rollupMiddleware.executeRollup);
@@ -13,4 +19,6 @@ export async function initRoutes(services: Services) {
   router.post('/deposit', moneyMiddleware.executeDeposit);
 
   router.post('/withdraw', moneyMiddleware.executeWithdraw);
+
+  router.post('/enlarge', accountsMiddleware.executeEnlarge);
 }

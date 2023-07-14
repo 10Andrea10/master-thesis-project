@@ -9,7 +9,7 @@ export class UserMiddleware {
 
   async deregisterUser(request: Request, response: Response): Promise<void> {
     console.log(
-      '[UserMiddleware] Deregistering user with request: ',
+      '[UserMiddleware] Deregistering user with request:\n ',
       request.body
     );
     const computationalResult = await this.zokratesInteractor.run(
@@ -25,7 +25,7 @@ export class UserMiddleware {
 
   async registerUser(request: Request, response: Response): Promise<void> {
     console.log(
-      '[UserMiddleware] Registering user with request: ',
+      '[UserMiddleware] Registering user with request:\n ',
       request.body
     );
     const computationalResult = await this.zokratesInteractor.run(
