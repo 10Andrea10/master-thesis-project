@@ -1,6 +1,5 @@
 export function convertProof(proof: string) {
   const mydata = JSON.parse(proof);
-  // console.log(mydata);
 
   // convert input values (Fr-scalar-fields)
   for (let i = 0; i < mydata.inputs.length; i++) {
@@ -10,7 +9,6 @@ export function convertProof(proof: string) {
   mydata.proof.a = convert_array_2_G1point(mydata.proof.a);
   mydata.proof.b = convert_array_2_G2point(mydata.proof.b);
   mydata.proof.c = convert_array_2_G1point(mydata.proof.c);
-  //console.log(mydata);
 
   return JSON.stringify(mydata, null, 4);
 }
@@ -49,7 +47,7 @@ function hexStringToByteArray(hexString: any) {
 function byteArrayToHexString(byteArray: any) {
   let hexString = '';
   let nextHexByte;
-  for (var i = 0; i < byteArray.byteLength - 1; i++) {
+  for (let i = 0; i < byteArray.byteLength - 1; i++) {
     nextHexByte = byteArray[i].toString(16); // Integer to base 16
     if (nextHexByte.length < 2) {
       nextHexByte = '0' + nextHexByte; // Otherwise 10 becomes just a instead of 0a
