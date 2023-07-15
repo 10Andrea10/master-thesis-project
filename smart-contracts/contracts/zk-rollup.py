@@ -1,38 +1,11 @@
 import smartpy as sp
+
+INITIAL_SIZE = 4
 class ZKRollupContract(sp.Contract):
-    def __init__(self):
+    def __init__(self, map):
         self.init(
             last_rollup_timestamp = sp.timestamp_from_utc_now(),
-            accounts =  sp.big_map(
-                l = {
-                    0 : sp.record(
-                        pub_key = sp.none,
-                        mutez_balance = sp.mutez(0),
-                        nonce = sp.nat(0),
-                    ), 
-                    1 : sp.record(
-                        pub_key = sp.none,
-                        mutez_balance = sp.mutez(0),
-                        nonce = sp.nat(0),
-                    ),
-                    2 : sp.record(
-                        pub_key = sp.none,
-                        mutez_balance = sp.mutez(0),
-                        nonce = sp.nat(0),
-                    ), 
-                    3 : sp.record(
-                        pub_key = sp.none,
-                        mutez_balance = sp.mutez(0),
-                        nonce = sp.nat(0),
-                    ), 
-                },
-                tkey = sp.TNat,
-                tvalue = sp.TRecord(
-                    pub_key = sp.TOption(sp.TKey),
-                    mutez_balance = sp.TMutez,
-                    nonce = sp.TNat,
-                )
-            ),
+            accounts =  map,
             mr_pub_key = {
                 0: sp.bls12_381_fr("0x4E1156DB00000000000000000000000000000000000000000000000000000000"),
                 1: sp.bls12_381_fr("0xC1D4FD0000000000000000000000000000000000000000000000000000000000"),
@@ -58,9 +31,9 @@ class ZKRollupContract(sp.Contract):
                 tkey = sp.TNat,
                 tvalue = sp.TMutez
             ),
-            accounts_power = sp.nat(2),
+            current_size = sp.nat(INITIAL_SIZE),
         )
-
+    
     def initial_checks_mr(self, params):
         sp.set_type(params.received_values, sp.TBigMap(sp.TInt, sp.TBls12_381_fr))
 
@@ -278,5 +251,42 @@ class ZKRollupContract(sp.Contract):
         amount = sp.utils.nat_to_mutez(sp.as_nat(sp.to_int(params.received_values[pos_amount.value])))
         sp.send(destination_address, amount)
 
+################################################################################################
+#                                                                                              #
+#                                                                                              #
+#                                            RESIZE                                            #
+#                                                                                              #
+#                                                                                              #
+################################################################################################
 
-sp.add_compilation_target("Rollup", ZKRollupContract())
+    @sp.entry_point
+    def resize_DEV(self, params):
+        sp.set_type(params.size, sp.TNat)
+        sp.for i in sp.range (self.data.current_size, params.size):
+            self.data.accounts[i] = sp.record(
+                    pub_key = sp.none,
+                    mutez_balance = sp.mutez(0),
+                    nonce = sp.nat(0),
+                    )
+        self.data.current_size = params.size
+
+
+def initialise_map():
+    map = {}
+    for i in range(0, INITIAL_SIZE):
+        map[i] = sp.record(
+                    pub_key = sp.none,
+                    mutez_balance = sp.mutez(0),
+                    nonce = sp.nat(0),
+        )
+    return sp.big_map(
+    l = map,
+    tkey = sp.TNat,
+    tvalue = sp.TRecord(
+        pub_key = sp.TOption(sp.TKey),
+        mutez_balance = sp.TMutez,
+        nonce = sp.TNat,
+    )
+)
+
+sp.add_compilation_target("Rollup", ZKRollupContract(initialise_map()))

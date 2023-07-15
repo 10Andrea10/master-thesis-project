@@ -89,8 +89,6 @@ if __name__ == "__main__":
         "0x0",
     ]
 
-    # balance_root = calculate_tree_root([str_to_bytes(x, 16) for x in balances])
-
     # NOTE: the nonce for the deregistered one is 0. Future use.
     nonces = [
         "0x1",
