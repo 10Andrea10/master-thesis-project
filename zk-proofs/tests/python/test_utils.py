@@ -1,5 +1,5 @@
 import hashlib
-import json
+from typing import List
 from pytezos.crypto.encoding import base58_decode
 
 
@@ -46,16 +46,19 @@ def decode_operation(operation: str) -> list:
     return ["0"] + bytes_to_u_array(op, bitsize=64)
 
 
-def calculate_tree_root(values: [bytearray]) -> bytearray:
-    h0 = sha256(values[0], values[1])
-    h1 = sha256(values[2], values[3])
+def calculate_tree_root(values: List[bytearray]) -> bytearray:
+    if len(values) == 1:
+        return byte32_to_u32_array8(values[0])
+    else:
+        new_values = []
+        for i in range(0, len(values), 2):
+            if i == len(values) - 1:
+                new_values.append(sha256(values[i], values[i]))
+            else:
+                new_values.append(sha256(values[i], values[i + 1]))
+        return calculate_tree_root(new_values)
 
-    h00 = sha256(h0, h1)
-
-    return byte32_to_u32_array8(h00)
-
-
-def concatenate_two_arrays_in_256(array1: [str], array2: [str]) -> [bytearray]:
+def concatenate_two_arrays_in_256(array1: List[str], array2: List[str]) -> List[bytearray]:
     result = []
     for i in range(0, len(array1)):
         result.append(sha256(str_to_bytes(array1[i], 16), str_to_bytes(array2[i], 16)))
