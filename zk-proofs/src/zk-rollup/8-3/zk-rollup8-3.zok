@@ -1,6 +1,6 @@
-from "./../lib/merkleTree" import merkleTreeProof, generateMerkleTree;
-from "./../lib/transactions" import checkTransactions ,calculateNewBalancesAndNonces, Transaction, TransactionHelper;
-from "./../lib/concatenator" import concatenateTwoArraysIn256;
+from "./../../lib/merkleTree" import merkleTreeProof, generateMerkleTree;
+from "./../../lib/transactions" import checkTransactions ,calculateNewBalancesAndNonces, Transaction, TransactionHelper;
+from "./../../lib/concatenator" import concatenateTwoArraysIn256;
 
 const u32 TREE_DEPTH = 3;
 const u32 TRANSAC_NUM = 3;
