@@ -68,17 +68,17 @@ def concatenate_two_arrays_in_256(array1: [str], array2: [str]) -> [bytearray]:
 
 if __name__ == "__main__":
 
-    # taken from file `dev.env`
-    pubkeys = [
-        "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4",   # alice
-        "edpkvGfYw3LyB1UcCahKQk4rF2tvbMUk8GFiTuMjL75uGXrpvKXhjn",   # bob
-        "",   # deregistered
-        "edpkvS6TDSWcqqj3EJi3NRrCMyN7oNw1B3Hp37R19tMThqM8YNhAuS",   # jane
-    ]
+    ACCOUNT_MAP_SIZE = 32
 
-    newUser = "edpkuT1QYPYbLLQz9dXhQS33ncsixxeGHbNGmntPTR4VBbWmskHPrV" # joe
-    newUserDecoded = decode_pubkey(newUser)
-    newuserFormatted = byte32_to_u32_array8(newUserDecoded)
+    # taken from file `dev.env`
+    pubkeys = []
+    balances = []
+    nonces = []
+
+    for i in range(0, ACCOUNT_MAP_SIZE):
+        pubkeys.append("")
+        balances.append("0x0")
+        nonces.append("0x0")
 
     decoded_pubkeys = [decode_pubkey(x) for x in pubkeys]
 
@@ -86,29 +86,12 @@ if __name__ == "__main__":
 
     account_root = calculate_tree_root(decoded_pubkeys)
 
-    balances = [
-        "0x2DC6C0",  # 3000000
-        "0x4C4B40",  # 5000000
-        "0x0",
-        "0x0",
-    ]
-
-    # balance_root = calculate_tree_root([str_to_bytes(x, 16) for x in balances])
-
-    # NOTE: the nonce for the deregistered one is 0. Future use.
-    nonces = [
-        "0x1",
-        "0x1",
-        "0x0",
-        "0x1",
-    ]
-
-    # nonces_root = calculate_tree_root([str_to_bytes(x, 16) for x in nonces])
-
-    # NOTE: this signature is a fake, not yet checked in the middleware
+    newUser = "edpkuT1QYPYbLLQz9dXhQS33ncsixxeGHbNGmntPTR4VBbWmskHPrV" # joe
+    newUserDecoded = decode_pubkey(newUser)
+    newuserFormatted = byte32_to_u32_array8(newUserDecoded)
+    # NOTE: this signature is a fake
     signature = "edsigterWW8Zo4MaL5TnvNNv7eSyUhPm4Zv9ziEj2dgYVeXrETdgEtKr7XmdSxrLYmDSEoXLaptK9pJsgwLm7Wwaebrxox1UQM1"
     decoded_signature = decode_signature(signature)
-
 
     concatenatedBalancesNonces = concatenate_two_arrays_in_256(balances, nonces)
 
@@ -121,7 +104,7 @@ if __name__ == "__main__":
         concatenatedBalancesNoncesTreeRoot,
         balances,
         nonces,
-        "0x2",
+        "0x1",
         newuserFormatted,
         decoded_signature
     ], indent=4)
