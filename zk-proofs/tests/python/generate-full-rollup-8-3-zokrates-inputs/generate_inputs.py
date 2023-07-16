@@ -17,9 +17,9 @@ def str_to_bytes(point: str, base: int) -> bytes:
 
 def bytes_to_u_array(val: bytearray, bitsize: int = 32, abi: bool = False) -> list:
     byte_jump = bitsize // 8
-    array_arrays = [val[i:i + byte_jump]
+    array_arrays = [val[i: i + byte_jump]
                     for i in range(0, len(val), byte_jump)]
-    ubit_array = [str(int.from_bytes(x, 'big', signed=False))
+    ubit_array = [str(int.from_bytes(x, "big", signed=False))
                   for x in array_arrays]
     if abi:
         ubit_array = ["0x" + str(int(x, 16)) for x in ubit_array]
@@ -27,7 +27,7 @@ def bytes_to_u_array(val: bytearray, bitsize: int = 32, abi: bool = False) -> li
 
 
 def byte32_to_u32_array8(val: bytearray) -> list:
-    assert (len(val) == 32)
+    assert len(val) == 32
     return bytes_to_u_array(val)
 
 
@@ -42,7 +42,6 @@ def decode_operation(operation: str) -> list:
 
 
 def calculate_tree_root(values: [bytearray]) -> bytearray:
-
     h0 = sha256(values[0], values[1])
     h1 = sha256(values[2], values[3])
 
@@ -60,12 +59,15 @@ def concatenate_two_arrays_in_256(array1: [str], array2: [str]) -> [bytearray]:
 
 
 if __name__ == "__main__":
-
     pubkeys = [
-        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",   
-        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",   
-        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",   
-        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",   
+        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",
+        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",
+        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",
+        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",
+        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",
+        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",
+        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",
+        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",
     ]
 
     # transactions signatures
@@ -89,15 +91,24 @@ if __name__ == "__main__":
     account_root = calculate_tree_root(decoded_pubkeys)
 
     balances = [
-        "0x0",  # 3000000
-        "0x0",  # 5000000
+        "0x3000000",  # 3000000
+        "0x5000000",  # 5000000
         "0x0",
         "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+
     ]
 
     # balance_root = calculate_tree_root([str_to_bytes(x, 16) for x in balances])
 
     nonces = [
+        "0x1",
+        "0x1",
+        "0x0",
+        "0x0",
         "0x0",
         "0x0",
         "0x0",
@@ -106,7 +117,8 @@ if __name__ == "__main__":
 
     # nonces_root = calculate_tree_root([str_to_bytes(x, 16) for x in nonces])
 
-    concatenatedBalancesNonces = concatenate_two_arrays_in_256(balances, nonces)
+    concatenatedBalancesNonces = concatenate_two_arrays_in_256(
+        balances, nonces)
 
     concatenatedBalancesNoncesTreeRoot = calculate_tree_root(
         concatenatedBalancesNonces)
@@ -116,19 +128,15 @@ if __name__ == "__main__":
             "sourceIndex": "0x0",
             "targetIndex": "0x1",
             "amount": "0x3E8",  # 1000
-            "nonce": "0x2"
+            "nonce": "0x2",
         },
-        {
-            "sourceIndex": "0x1",
-            "targetIndex": "0x2",
-            "amount": "0x3E8",
-            "nonce": "0x2"
-        },
+        {"sourceIndex": "0x1", "targetIndex": "0x2",
+            "amount": "0x3E8", "nonce": "0x2"},
         {
             "sourceIndex": "0x0",
             "targetIndex": "0x1",
             "amount": "0x1F4",  # 500
-            "nonce": "0x3"
+            "nonce": "0x3",
         },
     ]
 
@@ -144,23 +152,24 @@ if __name__ == "__main__":
             "signature": decoded_signatures[1],
         },
         {
-            "sourceAddress":  formatted_accounts[0],
-            "targetAddress":  formatted_accounts[1],
+            "sourceAddress": formatted_accounts[0],
+            "targetAddress": formatted_accounts[1],
             "signature": decoded_signatures[2],
         },
     ]
 
-    obj = json.dumps([
-        account_root,
-        # formatted_accounts,
-        # balance_root,
-        concatenatedBalancesNoncesTreeRoot,
-        #balances,
-        # nonces_root,
-        #nonces,
-        #transactions,
-        #transaction_extras
-    ], indent=4)
+    obj = json.dumps(
+        [
+            account_root,
+            formatted_accounts,
+            concatenatedBalancesNoncesTreeRoot,
+            balances,
+            nonces,
+            transactions,
+            transaction_extras,
+        ],
+        indent=4,
+    )
 
     with open("sampleZokinput.json", "w") as outfile:
         outfile.write(obj)

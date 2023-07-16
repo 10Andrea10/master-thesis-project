@@ -5,31 +5,31 @@ import "utils/casts/field_to_u32";
 
 // leave the root out of the struct as all the variables 
 // in the struct are all private and the root is public
-struct MerkleTreeProofStruct<DEPTH> {
-	u32[8] leaf;
-	bool[DEPTH] directionSelector; 
-	u32[DEPTH][8] path;
-}
+// struct MerkleTreeProofStruct<DEPTH> {
+// 	u32[8] leaf;
+// 	bool[DEPTH] directionSelector; 
+// 	u32[DEPTH][8] path;
+// }
 
-def select(bool condition, u32[8] left, u32[8] right) -> (u32[8], u32[8]) {
-	return (condition ? right : left, condition ? left : right);
-}
+// def select(bool condition, u32[8] left, u32[8] right) -> (u32[8], u32[8]) {
+// 	return (condition ? right : left, condition ? left : right);
+// }
 
 // Merkle-Tree inclusion proof for tree depth 4 using sha256
 // directionSelector => true if current digest is on the rhs of the hash
 
-def merkleTreeProof<DEPTH>(u32[8] root, MerkleTreeProofStruct<DEPTH> proof) -> bool {
-    // Start from the leaf
-    u32[8] mut digest = proof.leaf;
+// def merkleTreeProof<DEPTH>(u32[8] root, MerkleTreeProofStruct<DEPTH> proof) -> bool {
+//     // Start from the leaf
+//     u32[8] mut digest = proof.leaf;
 
-	// Loop up the tree
-	for u32 i in 0..DEPTH {
-		(u32[8], u32[8]) s = select(proof.directionSelector[i], digest, proof.path[i]);
-		digest = hash(s.0, s.1);
-	}
+// 	// Loop up the tree
+// 	for u32 i in 0..DEPTH {
+// 		(u32[8], u32[8]) s = select(proof.directionSelector[i], digest, proof.path[i]);
+// 		digest = hash(s.0, s.1);
+// 	}
 
-    return digest == root;
-}
+//     return digest == root;
+// }
 
 def generateMerkleTree<LEAFS_NUM>(u32[LEAFS_NUM][8] leafs, u32 tree_depth) -> u32[8] {
 

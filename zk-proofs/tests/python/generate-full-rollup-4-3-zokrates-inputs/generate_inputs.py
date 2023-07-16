@@ -4,9 +4,6 @@ from pytezos.crypto.encoding import base58_decode
 
 
 def decode_pubkey(pubkey: str) -> bytearray:
-    if pubkey == "":
-        # create a bitearray of length 32 filled with 0s
-        return bytearray(32)
     return base58_decode(str.encode(pubkey))
 
 
@@ -28,10 +25,6 @@ def bytes_to_u_array(val: bytearray, bitsize: int = 32, abi: bool = False) -> li
 
 
 def byte32_to_u32_array8(val: bytearray) -> list:
-    if val == b"":
-        fake_array = bytearray(32)
-        return bytes_to_u_array(fake_array)
-
     assert len(val) == 32
     return bytes_to_u_array(val)
 
@@ -68,10 +61,6 @@ if __name__ == "__main__":
         "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",
         "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",
         "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",
-        "",
-        "",
-        "",
-        "",
     ]
 
     # transactions signatures
@@ -95,12 +84,8 @@ if __name__ == "__main__":
     account_root = calculate_tree_root(decoded_pubkeys)
 
     balances = [
-        "0x2DC6C0",  # 3000000
-        "0x4C4B40",  # 5000000
-        "0x0",
-        "0x0",
-        "0x0",
-        "0x0",
+        "0x3000000",  # 3000000
+        "0x5000000",  # 5000000
         "0x0",
         "0x0",
     ]
@@ -110,10 +95,6 @@ if __name__ == "__main__":
     nonces = [
         "0x1",
         "0x1",
-        "0x1",
-        "0x1",
-        "0x0",
-        "0x0",
         "0x0",
         "0x0",
     ]
@@ -166,7 +147,7 @@ if __name__ == "__main__":
             balances,
             nonces,
             transactions,
-            transaction_extras
+            transaction_extras,
         ],
         indent=4,
     )
