@@ -17,9 +17,7 @@ compile_zokrates_code() {
 }
 
 # Call the function to compile the Zokrates code, passing the argument provided
-compile_zokrates_code "$1"
-zokrates setup -b ark -s gm17
-zokrates compute-witness --abi --verbose --stdin < ./../../../tests/python/output_files/rollup-16-3-inputs.json
-zokrates generate-proof -b ark -s gm17
-
-
+time compile_zokrates_code "$1"
+time zokrates setup -b ark -s gm17
+time zokrates compute-witness --abi --verbose --stdin < ./../../../tests/python/output_files/rollup-16-3-inputs.json
+time zokrates generate-proof -b ark -s gm17
