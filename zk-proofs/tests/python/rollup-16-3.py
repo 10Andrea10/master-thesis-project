@@ -12,6 +12,14 @@ if __name__ == "__main__":
         "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",
         "",
         "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",
+        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",
+        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",
+        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",
+        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",
+        "",
+        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",
+        "",
+        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4",
     ]
 
     # transactions signatures
@@ -43,12 +51,28 @@ if __name__ == "__main__":
         "0x0",
         "0x0",
         "0x0",
+        "0x3000000",  # 3000000
+        "0x5000000",  # 5000000
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
 
     ]
 
     # balance_root = calculate_tree_root([str_to_bytes(x, 16) for x in balances])
 
     nonces = [
+        "0x1",
+        "0x1",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
         "0x1",
         "0x1",
         "0x0",
@@ -115,5 +139,5 @@ if __name__ == "__main__":
         indent=4,
     )
 
-    with open("output_files/rollup-8-3-inputs.json", "w") as outfile:
+    with open("output_files/rollup-16-3-inputs.json", "w") as outfile:
         outfile.write(obj)
