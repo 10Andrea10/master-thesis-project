@@ -1,0 +1,13 @@
+from "ecc/jubjubParams" import JubJubParams;
+from "./hash" import hashTransaction;
+from "./types" import Transaction, Signature;
+from "./verifier" import verifyEddsa;
+import "ecc/jubjubParams.zok" as context;
+
+
+
+def verifySignatureTransaction(Transaction t, Signature s) -> bool {
+    (u32[8], u32[8]) M = hashTransaction(t);
+    return M.0 != M.1;
+}
+

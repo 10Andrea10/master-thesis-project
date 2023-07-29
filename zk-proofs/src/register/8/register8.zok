@@ -1,5 +1,5 @@
 from "./../../lib/merkleTree" import merkleTreeProof, generateMerkleTree;
-from "./../../lib/concatenator" import concatenateTwoArraysIn256;
+from "./../../lib/cast" import concatenateTwoArraysIn256;
 
 const u32 TREE_DEPTH = 3;
 const u32 ACCOUNT_NUM = 8;

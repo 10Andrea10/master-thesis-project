@@ -2,9 +2,9 @@ from "./../../lib/merkleTree" import generateMerkleTree;
 from "./../../lib/transactions" import checkTransactions ,calculateNewBalancesAndNonces, Transaction, TransactionHelper;
 from "./../../lib/cast" import concatenateTwoArraysIn256;
 
-const u32 TREE_DEPTH = 3;
-const u32 TRANSAC_NUM = 3;
-const u32 ACCOUNT_NUM = 8;
+const u32 TREE_DEPTH = 2;
+const u32 TRANSAC_NUM = 50;
+const u32 ACCOUNT_NUM = 4;
 
 def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8]hashedAccounts, u32[8] balanceNonceRoot, private u32[ACCOUNT_NUM] balances, private u32[ACCOUNT_NUM] nonces, Transaction[TRANSAC_NUM] transactions, private TransactionHelper[TRANSAC_NUM] transactionExtras) -> (u32[8], u32[ACCOUNT_NUM], u32[ACCOUNT_NUM]) {
     

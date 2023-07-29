@@ -1,0 +1,27 @@
+from "./types" import Transaction;
+from "./cast" import cast_64_u8_to_2_8_u32;
+from "utils/casts/u32_to_bits" import u32_to_bits;
+from "utils/casts/u8_from_bits" import u8_from_bits;
+import "hashes/sha3/512bit" as sha512bit;
+import "signatures/verifyEddsaJubJub.zok" as verifyEddsa;
+
+def hashTransaction(Transaction t) -> (u32[8], u32[8]) {
+    bool[32] sourceIndexBits = u32_to_bits(t.sourceIndex);
+    bool[32] targetIndexBits = u32_to_bits(t.targetIndex);
+    bool[32] amountBits = u32_to_bits(t.amount);
+    bool[32] nonceBits = u32_to_bits(t.nonce);
+
+    u8[4] mut sourceIndex8 = [0; 4];
+    u8[4] mut targetIndex8 = [0; 4];
+    u8[4] mut amount8 = [0; 4];
+    u8[4] mut nonce8 = [0; 4];
+
+    for u32 i in 0..4 {
+        sourceIndex8[i] = u8_from_bits(sourceIndexBits[i*8..i*8+8]);
+        targetIndex8[i] = u8_from_bits(targetIndexBits[i*8..i*8+8]);
+        amount8[i] = u8_from_bits(amountBits[i*8..i*8+8]);
+        nonce8[i] = u8_from_bits(nonceBits[i*8..i*8+8]);
+    }
+    
+    return cast_64_u8_to_2_8_u32(sha512bit([...sourceIndex8, ...targetIndex8, ...amount8, ...nonce8]));
+}

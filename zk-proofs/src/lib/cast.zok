@@ -1,4 +1,6 @@
 import "hashes/sha256/512bitPadded" as hash;
+import "utils/casts/u8_to_bits" as u8_to_bits;
+import "utils/casts/bool_array_to_u32_array" as u32_from_bits;
 
 def concatenateTwoArraysIn256<M>(u32[M] array1, u32[M] array2) -> u32[M][8] {
     u32[M][8] mut unpackedArray1 = [[0, 0, 0, 0, 0, 0, 0, 0]; M];
@@ -16,4 +18,18 @@ def concatenateTwoArraysIn256<M>(u32[M] array1, u32[M] array2) -> u32[M][8] {
     }
 
     return concatenated;
+}
+
+def cast_64_u8_to_2_8_u32(u8[64] input) -> (u32[8], u32[8]) {
+    bool[512] mut inputBits512 = [false; 512];
+
+    for u32 i in 0..64 {
+        bool[8] mut temp = u8_to_bits(input[i]);
+        for u32 j in 0..8 {
+            inputBits512[i*8 + j] = temp[j];
+        }
+    }
+    
+    u32[16] output = u32_from_bits(inputBits512);
+    return (output[0..8], output[8..16]);
 }

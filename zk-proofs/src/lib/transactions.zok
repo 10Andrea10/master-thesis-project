@@ -1,21 +1,7 @@
-// from "ecc/proofOfOwnership" import main as proofOfOwnership;
-// from "ecc/babyjubjubParams" import main as getContext, BabyJubJubParams;
-
-struct Transaction {
-    u32 sourceIndex;
-    u32 targetIndex;	
-	u32 amount;
-    u32 nonce;
-}
-
-struct TransactionHelper {
-	u32[8] sourceAddress; // in tezos this are public keys instead of addresses
-    u32[8] targetAddress; // in tezos this are public keys instead of addresses
-    u64[8] signature;     // signed operation
-}
+from "./types" import Signature, Transaction, TransactionHelper;
+from "./signature" import verifySignatureTransaction;
 
 def checkTransactions<N, M>(TransactionHelper[N] transactionExtras, u32[M][8] hashedAccounts, Transaction[N] transactions) -> bool {
-    // BabyJubJubParams context = getContext();
     
     for u32 i in 0..N {
         TransactionHelper transactionHelper = transactionExtras[i];
@@ -27,8 +13,8 @@ def checkTransactions<N, M>(TransactionHelper[N] transactionExtras, u32[M][8] ha
         assert(hashedAccounts[transaction.targetIndex] == transactionHelper.targetAddress);
 
         // check correctness of signature
-        // bool correctTransaction = proofOfOwnership(transaction.sourceAddress, transaction.signature, context);
-        // assert(correctTransaction);
+        bool correctTransactionSignature = verifySignatureTransaction(transaction, transactionHelper.signature);
+        assert(correctTransactionSignature);
     }
 
     return true;

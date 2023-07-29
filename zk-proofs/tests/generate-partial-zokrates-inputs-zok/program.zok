@@ -1,4 +1,4 @@
-from "./../../src/lib/concatenator" import concatenateTwoArraysIn256;
+from "./../../src/lib/cast" import concatenateTwoArraysIn256;
 from "./../../src/lib/merkleTree" import  generateMerkleTree;
 
 
