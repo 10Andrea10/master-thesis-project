@@ -41,9 +41,9 @@ if __name__ == "__main__":
 
     for i in range(1, num_transactions):
         transaction = {
-            "sourceIndex": f"0x0",
-            "targetIndex": f"0x1",
-            "amount": f"0x3E8",  # 1000
+            "sourceIndex": "0x0",
+            "targetIndex": "0x1",
+            "amount": "0x3E8",  # 1000
             "nonce": f"{hex(i+1)}",
         }
         transactions.append(transaction)
