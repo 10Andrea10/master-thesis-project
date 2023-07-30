@@ -3,7 +3,7 @@ from test_utils import decode_signature, decode_pubkey, calculate_tree_root, con
 
 if __name__ == "__main__":
     num_users = 4
-    num_transactions = 3
+    num_transactions = 50
 
     # Generate initial data
     pubkeys = [
@@ -11,41 +11,10 @@ if __name__ == "__main__":
     ]
     pubkeys[3] = ""
     signatures = [
-        { # 1, 2, 1000, 2
-            "r": [
-                "12208776621866386368519600434257825921555383783020262696401561725161443218565",
-                "42099659853764012415077786415304351648740015586463863995849451685412124172850"
-            ],
-            "s": "2098404967612575486283620368662466401991716185579121887552944125596937539059",
-            "a": [
-                "9463778183056102078866993118044984671658132484107251542179921426381620273800",
-                "4635611125295530335317425380928224173124053237108412540578596412445271041431"
-            ]
-        },
-        { # 0, 1, 1000, 2
-            "r": [
-                "49837993810953119869643538936684675884492480712745726504249519647092992881693",
-                "30300751163726295851876414107796870001500075600175571000921247621656087238919"
-            ],
-            "s": "3572664826812271746347243136662980116421687232883381060762418473194715881046",
-            "a": [
-                "9463778183056102078866993118044984671658132484107251542179921426381620273800",
-                "4635611125295530335317425380928224173124053237108412540578596412445271041431"
-            ]
-        },
-        { # 0, 1, 1000, 3
-            "r": [
-                "33710980908471373211996063963883981603099957743354356441716000823321900679038",
-                "25326865904216148308501068405457077316538193647463808608180447069516107467854"
-            ],
-            "s": "4951072257941399733424202207312274624875477637125321734778016159913706900892",
-            "a": [
-                "9463778183056102078866993118044984671658132484107251542179921426381620273800",
-                "4635611125295530335317425380928224173124053237108412540578596412445271041431"
-            ]
-        }
+        "edsigtfGjSvaiVoxdGW6wVZQGYvH4CYyV8FsXn5v9uKRnPq9bfUtGw6puA2yWNgjm8Gxwv56orvy4MJ2rrrtbFZa4HKESyfy8Hi" for _ in range(num_transactions)
     ]
-
+    decoded_signatures = [decode_signature(
+        signature) for signature in signatures]
     decoded_pubkeys = [decode_pubkey(x) for x in pubkeys]
     formatted_accounts = [byte32_to_u32_array8(x) for x in decoded_pubkeys]
     account_root = calculate_tree_root(decoded_pubkeys)
@@ -68,7 +37,7 @@ if __name__ == "__main__":
     transaction_extras.append({
         "sourceAddress": formatted_accounts[1],
         "targetAddress": formatted_accounts[2],
-        "signature": signatures[0]})
+        "signature": decoded_signatures[0]})
 
     for i in range(1, num_transactions):
         transaction = {
@@ -82,7 +51,7 @@ if __name__ == "__main__":
         transaction_extra = {
             "sourceAddress": formatted_accounts[0],
             "targetAddress": formatted_accounts[1],
-            "signature": signatures[i],
+            "signature": decoded_signatures[i],
         }
         transaction_extras.append(transaction_extra)
 
@@ -105,7 +74,7 @@ if __name__ == "__main__":
         indent=4,
     )
     
-    file_name = f"rollup-{num_users}-{num_transactions}-inputs.json"
+    file_name = f"rollup-{num_users}-{num_transactions}-noSig-inputs.json"
 
     with open(f"output_files/{file_name}", "w") as outfile:
         outfile.write(obj)

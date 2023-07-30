@@ -1,0 +1,97 @@
+{
+  "inputs": [
+    {
+      "name": "accountRoot",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "hashedAccounts",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 4,
+        "type": "array",
+        "components": {
+          "size": 8,
+          "type": "u32"
+        }
+      }
+    },
+    {
+      "name": "balanceNonceRoot",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "balances",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 4,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "nonces",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 4,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "position",
+      "public": true,
+      "type": "u32"
+    },
+    {
+      "name": "newAccount",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "signature",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u64"
+      }
+    }
+  ],
+  "output": {
+    "type": "tuple",
+    "components": {
+      "elements": [
+        {
+          "type": "array",
+          "components": {
+            "size": 8,
+            "type": "u32"
+          }
+        },
+        {
+          "type": "array",
+          "components": {
+            "size": 8,
+            "type": "u32"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "inputs": [
+    {
+      "name": "base",
+      "public": true,
+      "type": "u32"
+    }
+  ],
+  "output": {
+    "type": "u32"
+  }
+}

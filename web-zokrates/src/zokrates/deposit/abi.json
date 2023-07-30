@@ -1,0 +1,65 @@
+{
+  "inputs": [
+    {
+      "name": "accountRoot",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "balanceNonceRoot",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "balances",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 4,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "nonces",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 4,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "indexes",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "amounts",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "u32"
+      }
+    }
+  ],
+  "output": {
+    "type": "array",
+    "components": {
+      "size": 8,
+      "type": "u32"
+    }
+  }
+}

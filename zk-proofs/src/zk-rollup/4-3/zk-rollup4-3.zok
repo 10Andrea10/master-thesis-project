@@ -1,7 +1,6 @@
 from "./../../lib/merkleTree" import generateMerkleTree;
-from "./../../lib/transactions" import checkTransactions ,calculateNewBalancesAndNonces;
+from "./../../lib/transactions" import calculateNewBalancesAndNonces, checkTransactions;
 from "./../../lib/cast" import concatenateTwoArraysIn256;
-from "./../../lib/verifier" import verifyEddsa;
 from "./../../lib/types" import Transaction, TransactionHelper;
 
 

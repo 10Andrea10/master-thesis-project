@@ -10,9 +10,9 @@ struct Transaction {
     They're computed as part of the verification process.
 */
 struct Signature {
-    field[2] R;
-    field S;	
-	field[2] A;
+    field[2] r;
+    field s;	
+	field[2] a;
 }
 
 struct TransactionHelper {
