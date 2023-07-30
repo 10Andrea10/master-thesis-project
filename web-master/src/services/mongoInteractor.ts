@@ -39,7 +39,8 @@ export class MongoInteractor {
         transaction.sourceIndex,
         transaction.targetIndex,
         transaction.amount,
-        transaction.nonce
+        transaction.nonce,
+        transaction.signatureZokrates
       );
     });
     // Order the transactions by nonce

@@ -20,7 +20,8 @@ export class TransactionMiddleware {
       request.body.sourceIndex,
       request.body.targetIndex,
       request.body.amount,
-      request.body.nonce
+      request.body.nonce,
+      request.body.signatureZokrates
     );
     const signatureVerified = verifyTransactionSignature(transaction);
     if (!signatureVerified) {

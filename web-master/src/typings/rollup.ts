@@ -36,9 +36,9 @@ export class Rollup {
     const transactions = [];
     const transactionHelpers = [];
     for (const transaction of this.transactions) {
-      const signature = edsigToInt64Array(transaction.signature).map(element =>
-        element.toString()
-      );
+      // const signature = edsigToInt64Array(transaction.signature).map(element =>
+      //   element.toString()
+      // );
       transactions.push({
         sourceIndex: '0x' + transaction.sourceIndex.toString(16),
         targetIndex: '0x' + transaction.targetIndex.toString(16),
@@ -52,7 +52,7 @@ export class Rollup {
         targetAddress: numberArrayToStringArray(
           edpkToIntArray(transaction.target)
         ),
-        signature,
+        signature : transaction.signatureZokrates,
       });
     }
     return {transactions, transactionHelpers};

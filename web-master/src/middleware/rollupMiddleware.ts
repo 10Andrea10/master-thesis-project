@@ -34,6 +34,8 @@ export class RollupMiddleware {
       nonces
     );
     const zokratesInputs = rollup.toZokratesInput();
+    console.log('Zokrates inputs:\n\n');
+    console.log(zokratesInputs);
     const proof = await got.post(
       process.env.WEB_ROLLUP_SERVER_URL + '/execute',
       {
