@@ -1,10 +1,12 @@
 from "./../../lib/merkleTree" import generateMerkleTree;
-from "./../../lib/transactions" import checkTransactions ,calculateNewBalancesAndNonces, Transaction, TransactionHelper;
+from "./../../lib/transactions" import calculateNewBalancesAndNonces, checkTransactions;
 from "./../../lib/cast" import concatenateTwoArraysIn256;
+from "./../../lib/types" import Transaction, TransactionHelper;
 
-const u32 TREE_DEPTH = 3;
-const u32 TRANSAC_NUM = 3;
-const u32 ACCOUNT_NUM = 8;
+
+const u32 TREE_DEPTH = 2;
+const u32 TRANSAC_NUM = 30;
+const u32 ACCOUNT_NUM = 4;
 
 def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8]hashedAccounts, u32[8] balanceNonceRoot, private u32[ACCOUNT_NUM] balances, private u32[ACCOUNT_NUM] nonces, Transaction[TRANSAC_NUM] transactions, private TransactionHelper[TRANSAC_NUM] transactionExtras) -> (u32[8], u32[ACCOUNT_NUM], u32[ACCOUNT_NUM]) {
     
@@ -21,7 +23,7 @@ def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8]hashedAccounts, u32[8] b
 
     // iterate through each transaction and check that the corresponding signature and public key are correct
     bool correctTransactions = checkTransactions(transactionExtras, hashedAccounts, transactions);
-    log("accounts verified: {}", correctTransactions);
+    log("transactions verified: {}", correctTransactions);
     assert(correctTransactions);
 
     // iterate through each transaction and update the balances and nonces of each account

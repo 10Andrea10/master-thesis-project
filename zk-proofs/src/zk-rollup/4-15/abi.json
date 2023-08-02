@@ -54,7 +54,7 @@
       "public": true,
       "type": "array",
       "components": {
-        "size": 50,
+        "size": 15,
         "type": "struct",
         "components": {
           "name": "Transaction",
@@ -85,7 +85,7 @@
       "public": false,
       "type": "array",
       "components": {
-        "size": 50,
+        "size": 15,
         "type": "struct",
         "components": {
           "name": "TransactionHelper",
@@ -109,10 +109,32 @@
             },
             {
               "name": "signature",
-              "type": "array",
+              "type": "struct",
               "components": {
-                "size": 8,
-                "type": "u64"
+                "name": "Signature",
+                "generics": [],
+                "members": [
+                  {
+                    "name": "r",
+                    "type": "array",
+                    "components": {
+                      "size": 2,
+                      "type": "field"
+                    }
+                  },
+                  {
+                    "name": "s",
+                    "type": "field"
+                  },
+                  {
+                    "name": "a",
+                    "type": "array",
+                    "components": {
+                      "size": 2,
+                      "type": "field"
+                    }
+                  }
+                ]
               }
             }
           ]

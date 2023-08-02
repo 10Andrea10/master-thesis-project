@@ -1,15 +1,21 @@
 import json
-from test_utils import decode_signature, decode_pubkey, calculate_tree_root, concatenate_two_arrays_in_256, byte32_to_u32_array8
+from test_utils import decode_pubkey, calculate_tree_root, concatenate_two_arrays_in_256, byte32_to_u32_array8
 
 if __name__ == "__main__":
     num_users = 4
-    num_transactions = 3
+    num_transactions = 30
 
     # Generate initial data
     pubkeys = [
         "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4" for _ in range(num_users)
     ]
     pubkeys[3] = ""
+    
+    file_path = './output_files/zokrate-signature-input-ramon-50.json'
+
+    with open(file_path, 'r') as file:
+        data = json.load(file) # 0, 1, 1000, 1 + i
+    
     signatures = [
         { # 1, 2, 1000, 2
             "r": [
@@ -21,31 +27,11 @@ if __name__ == "__main__":
                 "9463778183056102078866993118044984671658132484107251542179921426381620273800",
                 "4635611125295530335317425380928224173124053237108412540578596412445271041431"
             ]
-        },
-        { # 0, 1, 1000, 2
-            "r": [
-                "49837993810953119869643538936684675884492480712745726504249519647092992881693",
-                "30300751163726295851876414107796870001500075600175571000921247621656087238919"
-            ],
-            "s": "3572664826812271746347243136662980116421687232883381060762418473194715881046",
-            "a": [
-                "9463778183056102078866993118044984671658132484107251542179921426381620273800",
-                "4635611125295530335317425380928224173124053237108412540578596412445271041431"
-            ]
-        },
-        { # 0, 1, 1000, 3
-            "r": [
-                "33710980908471373211996063963883981603099957743354356441716000823321900679038",
-                "25326865904216148308501068405457077316538193647463808608180447069516107467854"
-            ],
-            "s": "4951072257941399733424202207312274624875477637125321734778016159913706900892",
-            "a": [
-                "9463778183056102078866993118044984671658132484107251542179921426381620273800",
-                "4635611125295530335317425380928224173124053237108412540578596412445271041431"
-            ]
         }
     ]
-
+    
+    signatures.extend(data)
+    
     decoded_pubkeys = [decode_pubkey(x) for x in pubkeys]
     formatted_accounts = [byte32_to_u32_array8(x) for x in decoded_pubkeys]
     account_root = calculate_tree_root(decoded_pubkeys)
