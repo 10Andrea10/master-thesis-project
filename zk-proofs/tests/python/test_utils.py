@@ -1,7 +1,6 @@
-import hashlib
+from hashlib import sha3_256 as sha_ext
 from typing import List
 from pytezos.crypto.encoding import base58_decode
-
 
 def decode_pubkey(pubkey: str) -> bytearray:
     if pubkey == "":
@@ -11,11 +10,14 @@ def decode_pubkey(pubkey: str) -> bytearray:
 
 
 def sha256(lhs: bytearray, rhs: bytearray):
-    return hashlib.sha256(lhs + rhs).digest()
+    return sha_ext(lhs + rhs).digest()
 
 
 def str_to_bytes(point: str, base: int) -> bytes:
     return int(point, base=base).to_bytes(32, "big", signed=False)
+
+def str_to_byte(point: str, base: int) -> bytes:
+    return int(point, base=base).to_bytes(4, "big", signed=False)
 
 
 def bytes_to_u_array(val: bytearray, bitsize: int = 32, abi: bool = False) -> list:
@@ -61,5 +63,5 @@ def calculate_tree_root(values: List[bytearray]) -> bytearray:
 def concatenate_two_arrays_in_256(array1: List[str], array2: List[str]) -> List[bytearray]:
     result = []
     for i in range(0, len(array1)):
-        result.append(sha256(str_to_bytes(array1[i], 16), str_to_bytes(array2[i], 16)))
+        result.append(sha256(str_to_byte(array1[i], 16), str_to_byte(array2[i], 16)))
     return result

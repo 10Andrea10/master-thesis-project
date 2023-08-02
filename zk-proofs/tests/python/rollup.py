@@ -2,8 +2,8 @@ import json
 from test_utils import decode_pubkey, calculate_tree_root, concatenate_two_arrays_in_256, byte32_to_u32_array8
 
 if __name__ == "__main__":
-    num_users = 4
-    num_transactions = 30
+    num_users = 8
+    num_transactions = 3
 
     # Generate initial data
     pubkeys = [

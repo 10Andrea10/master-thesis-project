@@ -1,6 +1,6 @@
-// example taken from zokrates documentation https://github.com/Zokrates/ZoKrates/blob/deploy/zokrates_cli/examples/merkleTree/sha256PathProof3.zok
-import "hashes/sha256/512bitPadded" as hash;
+import "hashes/sha3/256bit" as hash; // u8[N] -> u8[32]
 import "utils/casts/field_to_u32";
+from "./cast" import cast_2_8_u32_to_2_32_u8, cast_32_u8_to_8_u32;
 
 def generateMerkleTree<LEAFS_NUM>(u32[LEAFS_NUM][8] leafs, u32 tree_depth) -> u32[8] {
 
@@ -17,7 +17,9 @@ def generateMerkleTree<LEAFS_NUM>(u32[LEAFS_NUM][8] leafs, u32 tree_depth) -> u3
 		for u32 j in  0..step_number {
 			u32 leftIndex = j * step_size;
 			u32 rightIndex = leftIndex + step_size / 2;
-			merkleTree[leftIndex] = hash(merkleTree[leftIndex], merkleTree[rightIndex]);  
+			(u8[32], u8[32]) casted = cast_2_8_u32_to_2_32_u8(merkleTree[leftIndex], merkleTree[rightIndex]);
+			u8[32] hashed = hash([...casted.0, ...casted.1]);
+			merkleTree[leftIndex] = cast_32_u8_to_8_u32(hashed);
 		}
 	}
 

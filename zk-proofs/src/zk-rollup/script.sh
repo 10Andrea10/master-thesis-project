@@ -76,6 +76,16 @@ stop_mem_use_script() {
     fi
 }
 
+# Function to handle the SIGINT signal (Ctrl+C)
+handle_ctrl_c() {
+    stop_mem_use_script
+    echo "Ctrl+C detected. Exiting..."
+    exit 1
+}
+
+# Register the SIGINT signal handler
+trap handle_ctrl_c SIGINT
+
 # Call the respective function based on the step arguments provided
 for step in "${steps[@]}"; do
     case $step in
