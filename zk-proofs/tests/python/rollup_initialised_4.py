@@ -3,13 +3,15 @@ from test_utils import decode_pubkey, calculate_tree_root, concatenate_two_array
 
 if __name__ == "__main__":
     num_users = 4
-    num_transactions = 30
+    num_transactions = 50
 
     # Generate initial data
     pubkeys = [
-        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4" for _ in range(num_users)
+        "edpku3EDFkXF2MHSipDKF2caz85yondEgqrohxdPdpXRpiX2tkFzuY", # bob
+        "edpkunwYWwaUUGPtbTGmggBB1dgmj5Ly8F9CwYHRL99XEDUgskgNBK", # alice
+        "edpkvRCLKPFrg7eYXLsKLjjZqYnsVtoZdRtF4RyzLzRFMHsqFrxpFF", # john
+        "edpktz9mUY7GeEbieZTsL2RwmA2GhwBd9YsYvRbnSFWnbb6pZX9aYH" # jane
     ]
-    pubkeys[3] = ""
     
     file_path = './output_files/zokrate-signature-input-ramon-50.json'
 
@@ -91,7 +93,7 @@ if __name__ == "__main__":
         indent=4,
     )
     
-    file_name = f"rollup-{num_users}-{num_transactions}-inputs.json"
+    file_name = f"rollup-initilised-{num_users}-{num_transactions}-inputs.json"
 
     with open(f"output_files/{file_name}", "w") as outfile:
         outfile.write(obj)

@@ -3,6 +3,7 @@
 # Parse the arguments
 version=""
 debug_flag=""
+initialised=""
 steps=()
 
 while [[ $# -gt 0 ]]; do
@@ -11,6 +12,10 @@ while [[ $# -gt 0 ]]; do
     case $key in
         -d)
             debug_flag="--debug"
+            shift
+            ;;
+        -i)
+            initialised="-initialised"
             shift
             ;;
         *)
@@ -26,7 +31,7 @@ done
 
 # Check if the version and steps are provided
 if [ -z "$version" ] || [ ${#steps[@]} -eq 0 ]; then
-    echo "Usage: $0 [-d] <version> <step1> [<step2> <step3> ...]"
+    echo "Usage: $0 [-d] [-i] <version> <step1> [<step2> <step3> ...]"
     exit 1
 fi
 
@@ -40,7 +45,7 @@ compile_zokrates_code() {
 }
 
 compute_witness() {
-    time zokrates compute-witness --abi --verbose --stdin < "./../../../tests/python/output_files/rollup-$version-inputs.json"
+    time zokrates compute-witness --abi --verbose --stdin < "./../../../tests/python/output_files/rollup$initialised-$version-inputs.json"
 }
 
 zokrates_setup() {

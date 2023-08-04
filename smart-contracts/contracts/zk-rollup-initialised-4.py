@@ -7,24 +7,24 @@ class ZKRollupContract(sp.Contract):
             last_rollup_timestamp = sp.timestamp_from_utc_now(),
             accounts =  map,
             mr_pub_key = {
-                0: sp.bls12_381_fr("0x4E1156DB00000000000000000000000000000000000000000000000000000000"),
-                1: sp.bls12_381_fr("0xC1D4FD0000000000000000000000000000000000000000000000000000000000"),
-                2: sp.bls12_381_fr("0x2B895CF800000000000000000000000000000000000000000000000000000000"),
-                3: sp.bls12_381_fr("0xA8C95AF300000000000000000000000000000000000000000000000000000000"),
-                4: sp.bls12_381_fr("0xECAA899200000000000000000000000000000000000000000000000000000000"),
-                5: sp.bls12_381_fr("0xA9D0EBB100000000000000000000000000000000000000000000000000000000"),
-                6: sp.bls12_381_fr("0x6A60DE6C00000000000000000000000000000000000000000000000000000000"),
-                7: sp.bls12_381_fr("0x715D8B7400000000000000000000000000000000000000000000000000000000"),
-                },
+                0: sp.bls12_381_fr("0x78285C0A00000000000000000000000000000000000000000000000000000000"),
+                1: sp.bls12_381_fr("0x8ECE7B9200000000000000000000000000000000000000000000000000000000"),
+                2: sp.bls12_381_fr("0x2890006E00000000000000000000000000000000000000000000000000000000"),
+                3: sp.bls12_381_fr("0x200A3A8300000000000000000000000000000000000000000000000000000000"),
+                4: sp.bls12_381_fr("0x0CE12D8600000000000000000000000000000000000000000000000000000000"),
+                5: sp.bls12_381_fr("0xC49E221D00000000000000000000000000000000000000000000000000000000"),
+                6: sp.bls12_381_fr("0xDBB1ACD100000000000000000000000000000000000000000000000000000000"),
+                7: sp.bls12_381_fr("0x2949C0A100000000000000000000000000000000000000000000000000000000"),
+            },
             mr_balance_nonce = {
-                0: sp.bls12_381_fr("0xFD0980C700000000000000000000000000000000000000000000000000000000"),
-                1: sp.bls12_381_fr("0x6AC57FF000000000000000000000000000000000000000000000000000000000"),
-                2: sp.bls12_381_fr("0x3722F11100000000000000000000000000000000000000000000000000000000"),
-                3: sp.bls12_381_fr("0x53A3580600000000000000000000000000000000000000000000000000000000"),
-                4: sp.bls12_381_fr("0xED42A5AA00000000000000000000000000000000000000000000000000000000"),
-                5: sp.bls12_381_fr("0x4B4CE46300000000000000000000000000000000000000000000000000000000"),
-                6: sp.bls12_381_fr("0xCDF45FC100000000000000000000000000000000000000000000000000000000"),
-                7: sp.bls12_381_fr("0x3CB35A1000000000000000000000000000000000000000000000000000000000"),
+                0: sp.bls12_381_fr("0x0A78205E00000000000000000000000000000000000000000000000000000000"),
+                1: sp.bls12_381_fr("0x2E1717F400000000000000000000000000000000000000000000000000000000"),
+                2: sp.bls12_381_fr("0xCD5E373B00000000000000000000000000000000000000000000000000000000"),
+                3: sp.bls12_381_fr("0x81E26C7600000000000000000000000000000000000000000000000000000000"),
+                4: sp.bls12_381_fr("0x3F5226A800000000000000000000000000000000000000000000000000000000"),
+                5: sp.bls12_381_fr("0x7013C8F400000000000000000000000000000000000000000000000000000000"),
+                6: sp.bls12_381_fr("0xAB6C0A6700000000000000000000000000000000000000000000000000000000"),
+                7: sp.bls12_381_fr("0xB04AAC3B00000000000000000000000000000000000000000000000000000000"),
             },
             deposit_queue = sp.map(
                 l = {},
@@ -78,22 +78,30 @@ class ZKRollupContract(sp.Contract):
     @sp.entry_point
     def receive_rollup_proof(self, params):
         self.initial_checks_mr(params)
+        sp.set_type(params.transaction_number, sp.TNat)
 
-        # TODO: put an if on the number of accounts passed as parameter and call the correct function
-        self.rollup_4_30(params)
+        sp.if params.transaction_number == 30:
+            self.rollup_4_30(params)
+        sp.if params.transaction_number == 50:
+            self.rollup_4_50(params)
 
                 
     def rollup_4_30(self, params):
         entry_point = "verify_rollup_4_30"
-        verification_contract = "KT1NDPhNvUhPCbYiGfqV8fqdCib1PQef7C8y"
-
+        verification_contract = "KT1CJv9KR13Mqj3XihgpKUi6wRcte5HW1QtZ"
+        self.rollup_generic(params, entry_point, verification_contract, 136, 144, 148)
+    
+    def rollup_4_50(self, params):
+        entry_point = "verify_rollup_4_50"
+        verification_contract = "KT1UNt2YPSMLRmSfE9aVWFygfKU4uPwkU7aV"
+        self.rollup_generic(params, entry_point, verification_contract, 216, 224, 228)
+    
+    def rollup_generic(self, params, entry_point, verification_contract, first_el_new_r_b_n, firs_bal, first_nonce):
         self.send_verification(params, verification_contract, entry_point)
-
-        # TODO: change if the proof index changes
-        pos_first_element_new_root_balances_nonces = sp.local('pos_first_element_new_root_balances_nonces', sp.int(28))
-        pos_first_balance_in_received_values = sp.local('pos_first_balance_in_received_values', sp.int(36))
-        pos_first_nonce_in_received_values = sp.local('pos_first_nonce_in_received_values', sp.int(40))
-        sp.for i in sp.range(0, sp.as_nat(4)):
+        pos_first_element_new_root_balances_nonces = sp.local('pos_first_element_new_root_balances_nonces', sp.int(first_el_new_r_b_n))
+        pos_first_balance_in_received_values = sp.local('pos_first_balance_in_received_values', sp.int(firs_bal))
+        pos_first_nonce_in_received_values = sp.local('pos_first_nonce_in_received_values', sp.int(first_nonce))
+        sp.for i in sp.range(0, self.data.current_size):
             # Conversions explanation:
             # - sp.utils.nat_to_mutez(sp.as_nat(sp.to_int( is because we're receiving types of sp.TBls12_381_fr and we need to convert them to mutez
             # - sp.to_int(i) is because the sp.range wanted a nat but to access a map we need an int, idk why since it's a big map declared with tkey = sp.TNat
@@ -102,6 +110,8 @@ class ZKRollupContract(sp.Contract):
             self.data.last_rollup_timestamp = sp.timestamp_from_utc_now()
         sp.for i in sp.range(0, 8):
             self.data.mr_balance_nonce[i] = params.received_values[i + pos_first_element_new_root_balances_nonces.value ]
+
+        
     
 ################################################################################################
 #                                                                                              #
@@ -272,13 +282,28 @@ class ZKRollupContract(sp.Contract):
 
 
 def initialise_map():
-    map = {}
-    for i in range(0, INITIAL_SIZE):
-        map[i] = sp.record(
-                    pub_key = sp.none,
+    map = {
+        0: sp.record(
+                    pub_key = sp.some(sp.key("edpku3EDFkXF2MHSipDKF2caz85yondEgqrohxdPdpXRpiX2tkFzuY")),
+                    mutez_balance = sp.mutez(50331648),
+                    nonce = sp.nat(1),
+        ),
+        1: sp.record(
+                    pub_key = sp.some(sp.key("edpkunwYWwaUUGPtbTGmggBB1dgmj5Ly8F9CwYHRL99XEDUgskgNBK")),
+                    mutez_balance = sp.mutez(83886080),
+                    nonce = sp.nat(1),
+        ),
+        2: sp.record(
+                    pub_key = sp.some(sp.key("edpkvRCLKPFrg7eYXLsKLjjZqYnsVtoZdRtF4RyzLzRFMHsqFrxpFF")),
                     mutez_balance = sp.mutez(0),
-                    nonce = sp.nat(0),
-        )
+                    nonce = sp.nat(1),
+        ),
+        3: sp.record(
+                    pub_key = sp.some(sp.key("edpktz9mUY7GeEbieZTsL2RwmA2GhwBd9YsYvRbnSFWnbb6pZX9aYH")),
+                    mutez_balance = sp.mutez(0),
+                    nonce = sp.nat(1),
+        ),
+    }
     return sp.big_map(
     l = map,
     tkey = sp.TNat,

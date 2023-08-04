@@ -1,0 +1,173 @@
+{
+  "inputs": [
+    {
+      "name": "accountRoot",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "hashedAccounts",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 4,
+        "type": "array",
+        "components": {
+          "size": 8,
+          "type": "u32"
+        }
+      }
+    },
+    {
+      "name": "balanceNonceRoot",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "balances",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 4,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "nonces",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 4,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "transactions",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 50,
+        "type": "struct",
+        "components": {
+          "name": "Transaction",
+          "generics": [],
+          "members": [
+            {
+              "name": "sourceIndex",
+              "type": "u32"
+            },
+            {
+              "name": "targetIndex",
+              "type": "u32"
+            },
+            {
+              "name": "amount",
+              "type": "u32"
+            },
+            {
+              "name": "nonce",
+              "type": "u32"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "transactionExtras",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 50,
+        "type": "struct",
+        "components": {
+          "name": "TransactionHelper",
+          "generics": [],
+          "members": [
+            {
+              "name": "sourceAddress",
+              "type": "array",
+              "components": {
+                "size": 8,
+                "type": "u32"
+              }
+            },
+            {
+              "name": "targetAddress",
+              "type": "array",
+              "components": {
+                "size": 8,
+                "type": "u32"
+              }
+            },
+            {
+              "name": "signature",
+              "type": "struct",
+              "components": {
+                "name": "Signature",
+                "generics": [],
+                "members": [
+                  {
+                    "name": "r",
+                    "type": "array",
+                    "components": {
+                      "size": 2,
+                      "type": "field"
+                    }
+                  },
+                  {
+                    "name": "s",
+                    "type": "field"
+                  },
+                  {
+                    "name": "a",
+                    "type": "array",
+                    "components": {
+                      "size": 2,
+                      "type": "field"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "output": {
+    "type": "tuple",
+    "components": {
+      "elements": [
+        {
+          "type": "array",
+          "components": {
+            "size": 8,
+            "type": "u32"
+          }
+        },
+        {
+          "type": "array",
+          "components": {
+            "size": 4,
+            "type": "u32"
+          }
+        },
+        {
+          "type": "array",
+          "components": {
+            "size": 4,
+            "type": "u32"
+          }
+        }
+      ]
+    }
+  }
+}

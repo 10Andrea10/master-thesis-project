@@ -5,10 +5,6 @@ struct Transaction {
     u32 nonce;
 }
 
-/*
-    Signature is missing the hashed message u32[8] M0 and u32[8] M1.
-    They're computed as part of the verification process.
-*/
 struct Signature {
     field[2] r;
     field s;	
@@ -16,8 +12,8 @@ struct Signature {
 }
 
 struct TransactionHelper {
-	u32[8] sourceAddress; // in tezos this are public keys instead of addresses
-    u32[8] targetAddress; // in tezos this are public keys instead of addresses
+	u32[8] sourceAddress;
+    u32[8] targetAddress; 
     Signature signature;  
 }
 
