@@ -1,0 +1,8 @@
+const u32 TREE_DEPTH = 2;
+const u32 ACCOUNT_NUM = 4;
+
+from "./merkleTree" import generateMerkleTreePoseidon;
+
+def main (u32[ACCOUNT_NUM][8] inputs) -> u32[8] {
+    return generateMerkleTreePoseidon(inputs, TREE_DEPTH);
+}

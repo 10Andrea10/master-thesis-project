@@ -1,5 +1,6 @@
 import json
-from test_utils import decode_pubkey, calculate_tree_root, concatenate_two_arrays_in_256, byte32_to_u32_array8
+from utils import decode_pubkey, calculate_tree_root, concatenate_two_arrays_in_256, byte32_to_u32_array8
+from utils_zok import calculate_tree_root_zok
 
 if __name__ == "__main__":
     num_users = 4
@@ -37,6 +38,7 @@ if __name__ == "__main__":
     decoded_pubkeys = [decode_pubkey(x) for x in pubkeys]
     formatted_accounts = [byte32_to_u32_array8(x) for x in decoded_pubkeys]
     account_root = calculate_tree_root(decoded_pubkeys)
+    account_root_poseidon = calculate_tree_root_zok(decoded_pubkeys)
 
     # Generate balances and nonces
     balances = ["0x0" for _ in range(num_users)]

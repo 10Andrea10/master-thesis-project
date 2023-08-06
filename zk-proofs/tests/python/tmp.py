@@ -1,4 +1,4 @@
-from test_utils import sha256
+from utils import sha256
 
 if __name__ == "__main__":
     a = bytearray.fromhex("6a09e667 bb67ae85 3c6ef372 a54ff53a 510e527f 9b05688c 1f83d9ab 5be0cd19")

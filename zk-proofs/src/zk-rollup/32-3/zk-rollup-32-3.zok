@@ -1,23 +1,23 @@
-from "./../../lib/merkleTree" import generateMerkleTree;
+from "./../../lib/merkleTree" import generateMerkleTreePoseidon;
 from "./../../lib/transactions" import calculateNewBalancesAndNonces, checkTransactions;
 from "./../../lib/cast" import hashCouplesArrays;
 from "./../../lib/types" import Transaction, TransactionHelper;
 
 
-const u32 TREE_DEPTH = 4;
+const u32 TREE_DEPTH = 5;
 const u32 TRANSAC_NUM = 3;
-const u32 ACCOUNT_NUM = 16;
+const u32 ACCOUNT_NUM = 32;
 
 def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8]hashedAccounts, u32[8] balanceNonceRoot, private u32[ACCOUNT_NUM] balances, private u32[ACCOUNT_NUM] nonces, Transaction[TRANSAC_NUM] transactions, private TransactionHelper[TRANSAC_NUM] transactionExtras) -> (u32[8], u32[ACCOUNT_NUM], u32[ACCOUNT_NUM]) {
     
     // verify that the accounts are the right ones
-    u32[8] generatedAccountRoot = generateMerkleTree(hashedAccounts, TREE_DEPTH);
+    u32[8] generatedAccountRoot = generateMerkleTreePoseidon(hashedAccounts, TREE_DEPTH);
     log("account root generated {}", generatedAccountRoot);
     assert(accountRoot == generatedAccountRoot);
 
     // verify that the balances + nonces inputed are the right ones
-    u32[ACCOUNT_NUM][8] balancesNonces = hashCouplesArrays(balances, nonces);
-    u32[8] generatedBalanceNonceRoot = generateMerkleTree(balancesNonces, TREE_DEPTH);
+    field[ACCOUNT_NUM] balancesNonces = hashCouplesArrays(balances, nonces);
+    u32[8] generatedBalanceNonceRoot = generateMerkleTreePoseidon(balancesNonces, TREE_DEPTH);
     log("balance + nonces root generated {}", generatedBalanceNonceRoot);
     assert(balanceNonceRoot == generatedBalanceNonceRoot);
 
@@ -29,8 +29,8 @@ def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8]hashedAccounts, u32[8] b
     // iterate through each transaction and update the balances and nonces of each account
     u32[2][ACCOUNT_NUM] newBalancesAndNonces = calculateNewBalancesAndNonces(balances, nonces, transactions, transactionExtras);
 
-    u32[ACCOUNT_NUM][8] newBalancesNonces = hashCouplesArrays(newBalancesAndNonces[0], newBalancesAndNonces[1]);
-    u32[8] balancesNoncesRoot = generateMerkleTree(newBalancesNonces, TREE_DEPTH);
+    field[ACCOUNT_NUM] newBalancesNonces = hashCouplesArrays(newBalancesAndNonces[0], newBalancesAndNonces[1]);
+    u32[8] balancesNoncesRoot = generateMerkleTreePoseidon(newBalancesNonces, TREE_DEPTH);
     log("new balance + nonces root generated {}", balancesNoncesRoot);
     
     return (balancesNoncesRoot, newBalancesAndNonces[0], newBalancesAndNonces[1]);

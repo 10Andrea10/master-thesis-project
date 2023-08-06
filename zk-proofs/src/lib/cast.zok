@@ -1,82 +1,15 @@
-// import "hashes/sha256/512bitPadded" as hash;
-import "hashes/sha3/256bit" as hash;
-import "utils/casts/u8_to_bits" as u8_to_bits;
-import "utils/casts/u8_from_bits" as u8_from_bits;
-import "utils/casts/bool_array_to_u32_array" as bool_array_to_u32_array;
-import "utils/casts/bool_256_to_u32_8" as bool_256_to_u32_8;
+import "hashes/poseidon/poseidon" as poseidon;
 import "utils/casts/u32_to_bits" as u32_to_bits;
-import "utils/casts/u32_8_to_bool_256" as u32_8_to_bool_256;
-import "utils/casts/u32_array_to_bool_array" as u32_array_to_bool_array;
+import "utils/pack/bool/pack" as pack;
 
-// def concatenateTwoArraysIn256<M>(u32[M] array1, u32[M] array2) -> u32[M][8] {
-//     u32[M][8] mut unpackedArray1 = [[0, 0, 0, 0, 0, 0, 0, 0]; M];
-//     for u32 i in 0..M {
-//         unpackedArray1[i][7] = array1[i];
-//     }
-//     u32[M][8] mut unpackedArray2 = [[0, 0, 0, 0, 0, 0, 0, 0]; M];
-//     for u32 i in 0..M {
-//         unpackedArray2[i][7] = array2[i];
-//     }
-
-//     u32[M][8] mut concatenated = [[0, 0, 0, 0, 0, 0, 0, 0]; M];
-//     for u32 i in 0..M {
-//         concatenated[i] = hash(unpackedArray1[i], unpackedArray2[i]);
-//     }
-
-//     return concatenated;
-// }
-
-def cast_32_u8_to_8_u32(u8[32] input) -> u32[8] {
-    bool[256] mut bits = [false; 256];
-    for u32 i in 0..32 {
-        bool[8] mut temp = u8_to_bits(input[i]);
-        for u32 j in 0..8 {
-            bits[i*8 + j] = temp[j];
-        }
-    }
-    return bool_256_to_u32_8(bits);
-}
 
 // Takes M * 2 ararys of u32 and hashes them by couples.
-def hashCouplesArrays<M>(u32[M] array1, u32[M] array2) -> u32[M][8] {
-    u32[M][8] mut result = [[0, 0, 0, 0, 0, 0, 0, 0]; M];
+def hashCouplesArrays<M>(u32[M] array1, u32[M] array2) -> field[M] {
+    field[M] mut result = [0; M];
     for u32 i in 0..M {
-        bool[32] a1_bool = u32_to_bits(array1[i]);
-        bool[32] a2_bool = u32_to_bits(array2[i]);
-        u8[4] mut a1_u8 = [0; 4];
-        u8[4] mut a2_u8 = [0; 4];
-        for u32 j in 0..4 {
-            a1_u8[j] = u8_from_bits(a1_bool[j*8..j*8+8]);
-            a2_u8[j] = u8_from_bits(a2_bool[j*8..j*8+8]);
-        }
-        u8[32] hashRes = hash([...a1_u8, ...a2_u8]);
-        result[i] = cast_32_u8_to_8_u32(hashRes);
+        bool[32] a1 = u32_to_bits(array1[i]);
+        bool[32] a2 = u32_to_bits(array2[i]);
+        result[i] = poseidon([pack([...a1, ...a2])]);
     }
     return result;
-}
-
-def cast_64_u8_to_2_8_u32(u8[64] input) -> (u32[8], u32[8]) {
-    bool[512] mut inputBits512 = [false; 512];
-
-    for u32 i in 0..64 {
-        bool[8] mut temp = u8_to_bits(input[i]);
-        for u32 j in 0..8 {
-            inputBits512[i*8 + j] = temp[j];
-        }
-    }
-    
-    u32[16] output = bool_array_to_u32_array(inputBits512);
-    return (output[0..8], output[8..16]);
-}
-
-def cast_2_8_u32_to_2_32_u8(u32[8] a, u32[8] b) -> (u8[32], u8[32]) {
-    bool[256] a_bool = u32_8_to_bool_256(a);
-    bool[256] b_bool = u32_8_to_bool_256(b);
-    u8[32] mut a_u8 = [0; 32];
-    u8[32] mut b_u8 = [0; 32];
-    for u32 i in 0..32 {
-        a_u8[i] = u8_from_bits(a_bool[i*8..i*8+8]);
-        b_u8[i] = u8_from_bits(b_bool[i*8..i*8+8]);
-    }
-    return (a_u8, b_u8);
 }
