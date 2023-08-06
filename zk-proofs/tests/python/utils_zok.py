@@ -10,7 +10,6 @@ def calculate_tree_root_zok(values):
     logsize = math.log(size, 2)
     # convert zokratesvalues to a string made by only the values separated by a space
     zokratesvalues = " ".join([" ".join(value) for value in zokratesvalues])
-    print(zokratesvalues)
     bash_command = f"zokrates compute-witness -i ./zok_files/merkleTree/out --verbose -a {zokratesvalues}"
     result = subprocess.run(bash_command, shell=True, capture_output=True, text=True)
     # Get the output of the command (stdout)

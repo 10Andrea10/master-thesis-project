@@ -1,0 +1,46 @@
+{
+  "inputs": [
+    {
+      "name": "transactions",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 3,
+        "type": "struct",
+        "components": {
+          "name": "Transaction",
+          "generics": [],
+          "members": [
+            {
+              "name": "sourceIndex",
+              "type": "u32"
+            },
+            {
+              "name": "targetIndex",
+              "type": "u32"
+            },
+            {
+              "name": "amount",
+              "type": "u32"
+            },
+            {
+              "name": "nonce",
+              "type": "u32"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "output": {
+    "type": "array",
+    "components": {
+      "size": 3,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    }
+  }
+}

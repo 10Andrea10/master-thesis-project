@@ -1,0 +1,17 @@
+from "./../../src/lib/types" import Transaction;
+from "./../../src/lib/hash" import hashTransactionPoseidon;
+import "utils/pack/u32/unpack256_bls12_381" as unpack256_bls12_381;
+
+const u32 TRANSAC_NUM = 3;
+// compute the first 8 u32 to give to the signature creator.
+def main (Transaction[TRANSAC_NUM] transactions) -> u32[TRANSAC_NUM][8] {
+
+    u32[TRANSAC_NUM][8] mut res = [[0;8] ; TRANSAC_NUM];
+
+    for u32 i in 0..TRANSAC_NUM {
+        field hash = hashTransactionPoseidon(transactions[i]);
+        log("field hash: {}", hash);
+        res[i] = unpack256_bls12_381(hash);
+    }
+    return res;
+}

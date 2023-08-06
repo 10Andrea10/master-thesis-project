@@ -1,0 +1,25 @@
+{
+  "inputs": [
+    {
+      "name": "balances",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 4,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "nonces",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 4,
+        "type": "u32"
+      }
+    }
+  ],
+  "output": {
+    "type": "field"
+  }
+}

@@ -10,7 +10,7 @@
       "public": false,
       "type": "array",
       "components": {
-        "size": 32,
+        "size": 4,
         "type": "array",
         "components": {
           "size": 8,
@@ -28,7 +28,7 @@
       "public": false,
       "type": "array",
       "components": {
-        "size": 32,
+        "size": 4,
         "type": "u32"
       }
     },
@@ -37,7 +37,7 @@
       "public": false,
       "type": "array",
       "components": {
-        "size": 32,
+        "size": 4,
         "type": "u32"
       }
     },
@@ -144,14 +144,14 @@
         {
           "type": "array",
           "components": {
-            "size": 32,
+            "size": 4,
             "type": "u32"
           }
         },
         {
           "type": "array",
           "components": {
-            "size": 32,
+            "size": 4,
             "type": "u32"
           }
         }

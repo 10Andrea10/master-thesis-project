@@ -1,0 +1,7 @@
+[
+    [
+        { "sourceIndex": "0x1", "targetIndex": "0x2", "amount": "0x3E8", "nonce": "0x2" },
+        { "sourceIndex": "0x0", "targetIndex": "0x1", "amount": "0x3E8", "nonce": "0x2" },
+        { "sourceIndex": "0x0", "targetIndex": "0x1", "amount": "0x3E8", "nonce": "0x3" }
+    ]
+]

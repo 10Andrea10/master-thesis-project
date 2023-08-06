@@ -1,0 +1,11 @@
+from "./../../src/lib/merkleTree" import generateMerkleTreePoseidon;
+
+const u32 TREE_DEPTH = 2;
+const u32 TRANSAC_NUM = 3;
+const u32 LEAFS_NUM = 4;
+
+def main(u32[LEAFS_NUM][8]arrayData) -> field {
+
+    return generateMerkleTreePoseidon(arrayData, TREE_DEPTH);
+
+}

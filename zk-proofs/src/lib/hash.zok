@@ -3,5 +3,6 @@ import "hashes/poseidon/poseidon" as poseidon;
 import "utils/pack/u32/pack128" as pack128;
 
 def hashTransactionPoseidon(Transaction t) -> field {
+    log("pack128: {}", pack128([t.sourceIndex, t.targetIndex, t.amount, t.nonce]));
     return poseidon([pack128([t.sourceIndex, t.targetIndex, t.amount, t.nonce])]);
 }
