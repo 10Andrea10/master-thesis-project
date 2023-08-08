@@ -1,8 +1,21 @@
 from "./types" import Transaction;
 import "hashes/poseidon/poseidon" as poseidon;
 import "utils/pack/u32/pack128" as pack128;
+import "utils/pack/bool/pack" as pack;
+import "utils/casts/u32_to_bits" as u32_to_bits;
+
 
 def hashTransactionPoseidon(Transaction t) -> field {
-    log("pack128: {}", pack128([t.sourceIndex, t.targetIndex, t.amount, t.nonce]));
     return poseidon([pack128([t.sourceIndex, t.targetIndex, t.amount, t.nonce])]);
+}
+
+// Takes 2 u32[M] ararys and hashes them by couples.
+def hashCouplesArrays<M>(u32[M] array1, u32[M] array2) -> field[M] {
+    field[M] mut result = [0; M];
+    for u32 i in 0..M {
+        bool[32] a1 = u32_to_bits(array1[i]);
+        bool[32] a2 = u32_to_bits(array2[i]);
+        result[i] = poseidon([pack([...a1, ...a2])]);
+    }
+    return result;
 }

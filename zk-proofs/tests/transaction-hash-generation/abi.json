@@ -5,7 +5,7 @@
       "public": true,
       "type": "array",
       "components": {
-        "size": 3,
+        "size": 1024,
         "type": "struct",
         "components": {
           "name": "Transaction",
@@ -35,7 +35,7 @@
   "output": {
     "type": "array",
     "components": {
-      "size": 3,
+      "size": 1024,
       "type": "array",
       "components": {
         "size": 8,

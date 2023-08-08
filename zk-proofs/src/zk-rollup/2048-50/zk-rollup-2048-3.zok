@@ -4,9 +4,9 @@ from "./../../lib/hash" import hashCouplesArrays;
 from "./../../lib/types" import Transaction, TransactionHelper;
 
 
-const u32 TREE_DEPTH = 2;
+const u32 TREE_DEPTH = 11;
 const u32 TRANSAC_NUM = 50;
-const u32 ACCOUNT_NUM = 4;
+const u32 ACCOUNT_NUM = 2048;
 
 def main(field accountRoot, private u32[ACCOUNT_NUM][8]castedAccounts, field balanceNonceRoot, private u32[ACCOUNT_NUM] balances, private u32[ACCOUNT_NUM] nonces, Transaction[TRANSAC_NUM] transactions, private TransactionHelper[TRANSAC_NUM] transactionExtras) -> (field, u32[ACCOUNT_NUM], u32[ACCOUNT_NUM]) {
     

@@ -1,6 +1,6 @@
 from "./../../lib/merkleTree" import generateMerkleTree;
 from "./../../lib/transactions" import calculateNewBalancesAndNonces, checkTransactions;
-from "./../../lib/cast" import hashCouplesArrays;
+from "./../../lib/hash" import hashCouplesArrays;
 from "./../../lib/types" import Transaction, TransactionHelper;
 
 
