@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@taqueria/plugin-flextesa": "^0.28.6",
+    "@taqueria/plugin-flextesa": "^0.28.26",
     "@taqueria/plugin-smartpy": "^0.28.6",
     "@taqueria/plugin-taquito": "^0.28.6"
   },

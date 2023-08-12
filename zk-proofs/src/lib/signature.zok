@@ -9,3 +9,7 @@ def verifySignatureTransaction(Transaction t, Signature s) -> bool {
     return verifyEddsa(s.r, s.s, s.a, first, [0; 8]);
 }
 
+def verifySignatureDeregister(u32 position, Signature s) -> bool {
+    return verifyEddsa(s.r, s.s, s.a, [position; 8], [0; 8]);
+}
+

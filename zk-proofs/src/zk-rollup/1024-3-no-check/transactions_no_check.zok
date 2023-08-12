@@ -1,5 +1,5 @@
-from "./types" import Transaction, TransactionHelper;
-from "./signature" import verifySignatureTransaction;
+from "./../../lib/types" import Transaction, TransactionHelper;
+// from "./../../lib/signature" import verifySignatureTransaction;
 
 def checkTransactions<N, M>(TransactionHelper[N] transactionExtras, u32[M][8] hashedAccounts, Transaction[N] transactions) -> bool {
     
@@ -12,9 +12,15 @@ def checkTransactions<N, M>(TransactionHelper[N] transactionExtras, u32[M][8] ha
         assert(hashedAccounts[transaction.sourceIndex] == transactionHelper.sourceAddress);
         assert(hashedAccounts[transaction.targetIndex] == transactionHelper.targetAddress);
 
+        assert(transactionHelper.signature.r[0] != 0);
+        assert(transactionHelper.signature.r[1] != 0);
+        assert(transactionHelper.signature.s != 0);
+        assert(transactionHelper.signature.a[0] != 0);
+        assert(transactionHelper.signature.a[1] != 0);
+
         // check correctness of signature
-        bool correctTransactionSignature = verifySignatureTransaction(transaction, transactionHelper.signature);
-        assert(correctTransactionSignature);
+        // bool correctTransactionSignature = verifySignatureTransaction(transaction, transactionHelper.signature);
+        // assert(correctTransactionSignature);
     }
 
     return true;

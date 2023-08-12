@@ -19,7 +19,7 @@
       }
     },
     {
-      "name": "balanceNonceRoot",
+      "name": "balancesNoncesRoot",
       "public": true,
       "type": "field"
     },

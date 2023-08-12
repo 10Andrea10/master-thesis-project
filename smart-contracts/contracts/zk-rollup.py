@@ -187,7 +187,10 @@ class ZKRollupContract(sp.Contract):
         sp.set_type(params.account_index, sp.TNat)
         sp.set_type(params.account_public_key, sp.TKey)
         # Check sender is the user
-        sp.to_address(sp.implicit_account(sp.hash_key(params.account_public_key)))
+        # Another version removing account_public_key param may be:
+        #   - fetch the pubkey from the storage using the account_index
+        #   - check the pubkey is the same as the sender using the conversion
+        #   - sp.to_address(sp.implicit_account(sp.hash_key(self.data.accounts[params.account_index].pub_key])))
         converted_address = sp.to_address(sp.implicit_account(sp.hash_key(params.account_public_key)))
         sp.if sp.sender != converted_address:
             sp.failwith("Sender is different from the sent public key")
