@@ -1,4 +1,4 @@
-from "./../../lib/merkleTree" import generateMerkleTree;
+from "./../../lib/merkleTree" import generateMerkleTreePoseidon;
 from "./../../lib/transactions" import calculateNewBalancesAndNonces, checkTransactions;
 from "./../../lib/hash" import hashCouplesArrays;
 from "./../../lib/types" import Transaction, TransactionHelper;
@@ -11,13 +11,13 @@ const u32 ACCOUNT_NUM = 4;
 def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8]hashedAccounts, u32[8] balancesNoncesRoot, private u32[ACCOUNT_NUM] balances, private u32[ACCOUNT_NUM] nonces, Transaction[TRANSAC_NUM] transactions, private TransactionHelper[TRANSAC_NUM] transactionExtras) -> (u32[8], u32[ACCOUNT_NUM], u32[ACCOUNT_NUM]) {
     
     // verify that the accounts are the right ones
-    u32[8] generatedAccountRoot = generateMerkleTree(hashedAccounts, TREE_DEPTH);
+    u32[8] generatedAccountRoot = generateMerkleTreePoseidon(hashedAccounts, TREE_DEPTH);
     log("account root generated {}", generatedAccountRoot);
     assert(accountRoot == generatedAccountRoot);
 
     // verify that the balances + nonces inputed are the right ones
     u32[ACCOUNT_NUM][8] balancesNonces = hashCouplesArrays(balances, nonces);
-    u32[8] generatedBalancesNoncesRoot = generateMerkleTree(balancesNonces, TREE_DEPTH);
+    u32[8] generatedBalancesNoncesRoot = generateMerkleTreePoseidon(balancesNonces, TREE_DEPTH);
     log("balance + nonces root generated {}", generatedBalancesNoncesRoot);
     assert(balancesNoncesRoot == generatedBalancesNoncesRoot);
 
@@ -30,7 +30,7 @@ def main(u32[8] accountRoot, private u32[ACCOUNT_NUM][8]hashedAccounts, u32[8] b
     u32[2][ACCOUNT_NUM] newBalancesAndNonces = calculateNewBalancesAndNonces(balances, nonces, transactions, transactionExtras);
 
     u32[ACCOUNT_NUM][8] newBalancesNonces = hashCouplesArrays(newBalancesAndNonces[0], newBalancesAndNonces[1]);
-    u32[8] newBalancesNoncesRoot = generateMerkleTree(newBalancesNonces, TREE_DEPTH);
+    u32[8] newBalancesNoncesRoot = generateMerkleTreePoseidon(newBalancesNonces, TREE_DEPTH);
     log("new balance + nonces root generated {}", newBalancesNoncesRoot);
     
     return (newBalancesNoncesRoot, newBalancesAndNonces[0], newBalancesAndNonces[1]);
