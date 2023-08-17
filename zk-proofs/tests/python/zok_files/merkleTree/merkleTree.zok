@@ -1,8 +1,9 @@
 import "utils/casts/field_to_u32";
 import "hashes/poseidon/poseidon" as poseidon;
 import "utils/pack/u32/pack128" as pack128;
+import "utils/pack/u32/unpack256_bls12_381" as unpack256_bls12_381;
 
-def generateMerkleTreePoseidon<LEAFS_NUM>(u32[LEAFS_NUM][8] leafs, u32 tree_depth) -> field {
+def generateMerkleTreePoseidon<LEAFS_NUM>(u32[LEAFS_NUM][8] leafs, u32 tree_depth) -> u32[8] {
 	// assert that LEAFS_NUM is a power of 2
 	assert(field_to_u32(2 ** tree_depth) == LEAFS_NUM);
 
@@ -23,25 +24,5 @@ def generateMerkleTreePoseidon<LEAFS_NUM>(u32[LEAFS_NUM][8] leafs, u32 tree_dept
 			merkleTree[leftIndex] = poseidon(poseidonInputs);
 		}
 	}
-    return merkleTree[0];
-}
-
-def generateMerkleTreePoseidon<LEAFS_NUM>(field[LEAFS_NUM] leafs, u32 tree_depth) -> field {
-	// assert that LEAFS_NUM is a power of 2
-	assert(field_to_u32(2 ** tree_depth) == LEAFS_NUM);
-
-	field[LEAFS_NUM] mut merkleTree = leafs;
-
-	for u32 i in 0..tree_depth {
-		u32 step_size = 1 << (i + 1);
-		u32 step_number = (LEAFS_NUM / step_size);
-		for u32 j in  0..step_number {
-			u32 leftIndex = j * step_size;
-			u32 rightIndex = leftIndex + step_size / 2;
-
-			field[2] poseidonInputs = [merkleTree[leftIndex], merkleTree[rightIndex]];
-			merkleTree[leftIndex] = poseidon(poseidonInputs);
-		}
-	}
-    return merkleTree[0];
+    return unpack256_bls12_381(merkleTree[0]);
 }

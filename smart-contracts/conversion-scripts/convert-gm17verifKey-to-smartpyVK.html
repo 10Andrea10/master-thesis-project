@@ -1,121 +1,130 @@
 <!DOCTYPE html>
-<!-- Simply open html in browser and follow instructions. 
+<!--
+    Simply open html in browser (best with chrome) and follow instructions. 
     Credits: https://git.tu-berlin.de/adsp-blockchain-tezos-marketplace/adsp-tezos-marketplace/-/tree/main/contracts/verification/conversion-scripts
 -->
 <html>
-<body>
-    <h3>Convert verification.key (GM17-scheme) from Ethereum compatible to Smartpy compatible</h3>
-    <p>Description: Select your verification.key file in uncompressed format (Solidity) and convert to compressed format directly usable as SmartPy code:</p>
-    <p>Select your verification.key file:</p>
-    <input type="file" id="file-selector" multiple><br><br>
-    <span id="fileContents">Download file and add to smartpy code:</span>
-</body>
+    <body>
+        <h3>
+            Convert verification.key (GM17-scheme) from Ethereum compatible to Smartpy compatible
+        </h3>
+        <p>
+            Description: Select your verification.key file in uncompressed format (Solidity) and
+            convert to compressed format directly usable as SmartPy code:
+        </p>
+        <p>Select your verification.key file:</p>
+        <input type="file" id="file-selector" multiple /><br /><br />
+        <span id="fileContents">Download file and add to smartpy code:</span>
+    </body>
 
-<script>
-    
-    var data = "";
-    const fileSelector = document.getElementById('file-selector');
-    document.getElementById('fileContents').style.visibility = 'hidden';
-    
-    // upon file upload of user, the file is read, converted and provided via download-link 
-    fileSelector.addEventListener('change', (event) => {
-        const fileList = event.target.files;
-        var reader = new FileReader();
-        reader.readAsText(fileList[0]);
-        
-        reader.onload = function (evt) {
-            data = evt.target.result;
-            console.log(data);
-            var convertedDataAsString = convert_data(data);
-            var dowloadElement = makeTextFileAndCreateDownloadLink(convertedDataAsString, 'vk-smartpy.py.txt');
-            document.getElementById('fileContents').style.visibility = 'visible';
-            document.body.appendChild(dowloadElement);
-            dowloadElement.click();
+    <script>
+        var data = "";
+        const fileSelector = document.getElementById("file-selector");
+        document.getElementById("fileContents").style.visibility = "hidden";
 
-        }
-        reader.onerror = function (evt) {
-            document.getElementById("fileContents").innerHTML = "error reading file";
-        }
-    });
-    
-    /* takes a JSON-String, parses it to JSON-Object, converts G1/G2 curve points with below helper-functions, and returns a formated String (SmartPy code) */
-    function convert_data(data) {
-        var mydata = JSON.parse(data);
-        console.log(mydata);
-        var output = "";
+        // upon file upload of user, the file is read, converted and provided via download-link
+        fileSelector.addEventListener("change", (event) => {
+            const fileList = event.target.files;
+            var reader = new FileReader();
+            reader.readAsText(fileList[0]);
 
-        var vk_h =       convert_array_2_smartpy_G2point(mydata.h, "vk_h");
-        var vk_g_alpha = convert_array_2_smartpy_G1point(mydata.g_alpha, "vk_g_alpha");
-        var vk_h_beta =  convert_array_2_smartpy_G2point(mydata.h_beta, "vk_h_beta");
-        var vk_g_gamma = convert_array_2_smartpy_G1point(mydata.g_gamma, "vk_g_gamma");
-        var vk_h_gamma = convert_array_2_smartpy_G2point(mydata.h_gamma, "vk_h_gamma");
-        
-        // adds new line and spaces necessary for correct SmartPy format
-        // \t (tabs) don't work here, they produce error in SmartPy online IDE
-        output += vk_h   + "\n        "
-            + vk_g_alpha + "\n        "
-            + vk_h_beta  + "\n        "
-            + vk_g_gamma + "\n        "
-            + vk_h_gamma + "\n        ";
-        
-        // adds the big-map
-        output += "vk_query = {\n\t\t\t";
-        for (let i = 0; i < mydata.query.length; i++) { 
-            var g1_1=mydata.query[i][0]; 
-            var g1_2=mydata.query[i][1];    
-            output += i + ": sp.bls12_381_g1(\"" + g1_1 + g1_2.substring(2, g1_2.length) + "\")";
-            // make sure last comma is not added
-            if(i < mydata.query.length - 1) output += ",\n\t\t\t";
-        }
-        output += "\n\t\t}"
-        console.log(output);
-        return output;
-    }
-    
-    
-    ///////////////////////////// GENERIC-LIBRARY /////////////////////////////
-    
-    // creates a file and returns a href-element which upon click downloads the file
-    function makeTextFileAndCreateDownloadLink(data, filename) {
-        var textFile = null;
-        var newData = new Blob([data], {type: 'text/plain'});
-        // If we are replacing a previously generated file we need to
-        // manually revoke the object URL to avoid memory leaks.
-        if (textFile !== null) {
-            window.URL.revokeObjectURL(textFile);
-        }
-        // returns a URL you can use as a href
-        textFile = window.URL.createObjectURL(newData);
+            reader.onload = function (evt) {
+                data = evt.target.result;
+                console.log(data);
+                var convertedDataAsString = convert_data(data);
+                var dowloadElement = makeTextFileAndCreateDownloadLink(
+                    convertedDataAsString,
+                    "vk-smartpy.py.txt",
+                );
+                document.getElementById("fileContents").style.visibility = "visible";
+                document.body.appendChild(dowloadElement);
+                dowloadElement.click();
+            };
+            reader.onerror = function (evt) {
+                document.getElementById("fileContents").innerHTML = "error reading file";
+            };
+        });
 
-        var link = document.createElement('a');
-        link.setAttribute('download', filename);
-        link.href = textFile;
-        link.innerHTML = "Download link";
-        
-        return link;
-    }
-    
-    ///////////////////////////// CONVERSION-LIBRARY /////////////////////////////
-    
-    
-     function convert_array_2_smartpy_G1point(arr, name) {
-        var g1 = 
-        name + " = sp.bls12_381_g1(\"" + 
-        arr[0] + 
-        arr[1].substring(2, arr[1].length) + "\")";
-        return g1;
-    }
-    
-    function convert_array_2_smartpy_G2point(arr, name) {
-        var g2 = 
-        name + " = sp.bls12_381_g2(\"" + 
-        arr[0][1] + 
-        arr[0][0].substring(2, arr[0][0].length) +
-        arr[1][1].substring(2, arr[0][0].length) +
-        arr[1][0].substring(2, arr[0][0].length) + "\")"; 
-        return g2;
-    }
-        
+        /* takes a JSON-String, parses it to JSON-Object, converts G1/G2 curve points with below helper-functions, and returns a formated String (SmartPy code) */
+        function convert_data(data) {
+            var mydata = JSON.parse(data);
+            console.log(mydata);
+            var output = "";
+
+            var vk_h = convert_array_2_smartpy_G2point(mydata.h, "vk_h");
+            var vk_g_alpha = convert_array_2_smartpy_G1point(mydata.g_alpha, "vk_g_alpha");
+            var vk_h_beta = convert_array_2_smartpy_G2point(mydata.h_beta, "vk_h_beta");
+            var vk_g_gamma = convert_array_2_smartpy_G1point(mydata.g_gamma, "vk_g_gamma");
+            var vk_h_gamma = convert_array_2_smartpy_G2point(mydata.h_gamma, "vk_h_gamma");
+
+            // adds new line and spaces necessary for correct SmartPy format
+            // \t (tabs) don't work here, they produce error in SmartPy online IDE
+            output +=
+                vk_h +
+                "\n        " +
+                vk_g_alpha +
+                "\n        " +
+                vk_h_beta +
+                "\n        " +
+                vk_g_gamma +
+                "\n        " +
+                vk_h_gamma +
+                "\n        ";
+
+            // adds the big-map
+            output += "vk_query = {\n\t\t\t";
+            for (let i = 0; i < mydata.query.length; i++) {
+                var g1_1 = mydata.query[i][0];
+                var g1_2 = mydata.query[i][1];
+                output += i + ': sp.bls12_381_g1("' + g1_1 + g1_2.substring(2, g1_2.length) + '")';
+                // make sure last comma is not added
+                if (i < mydata.query.length - 1) output += ",\n\t\t\t";
+            }
+            output += "\n\t\t}";
+            console.log(output);
+            return output;
+        }
+
+        ///////////////////////////// GENERIC-LIBRARY /////////////////////////////
+
+        // creates a file and returns a href-element which upon click downloads the file
+        function makeTextFileAndCreateDownloadLink(data, filename) {
+            var textFile = null;
+            var newData = new Blob([data], { type: "text/plain" });
+            // If we are replacing a previously generated file we need to
+            // manually revoke the object URL to avoid memory leaks.
+            if (textFile !== null) {
+                window.URL.revokeObjectURL(textFile);
+            }
+            // returns a URL you can use as a href
+            textFile = window.URL.createObjectURL(newData);
+
+            var link = document.createElement("a");
+            link.setAttribute("download", filename);
+            link.href = textFile;
+            link.innerHTML = "Download link";
+
+            return link;
+        }
+
+        ///////////////////////////// CONVERSION-LIBRARY /////////////////////////////
+
+        function convert_array_2_smartpy_G1point(arr, name) {
+            var g1 =
+                name + ' = sp.bls12_381_g1("' + arr[0] + arr[1].substring(2, arr[1].length) + '")';
+            return g1;
+        }
+
+        function convert_array_2_smartpy_G2point(arr, name) {
+            var g2 =
+                name +
+                ' = sp.bls12_381_g2("' +
+                arr[0][1] +
+                arr[0][0].substring(2, arr[0][0].length) +
+                arr[1][1].substring(2, arr[0][0].length) +
+                arr[1][0].substring(2, arr[0][0].length) +
+                '")';
+            return g2;
+        }
     </script>
-    
 </html>

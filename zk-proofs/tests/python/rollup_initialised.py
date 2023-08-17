@@ -1,40 +1,31 @@
 import json
-from utils import decode_pubkey, calculate_tree_root, concatenate_two_arrays_in_256, byte32_to_u32_array8
+from utils import decode_pubkey, byte32_to_u32_array8
 
 if __name__ == "__main__":
-    num_users = 4
-    num_transactions = 30
+    num_users = 2048
+    num_transactions = 3
 
     # Generate initial data
     pubkeys = [
-        "edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4" for _ in range(num_users)
+        "edpku3EDFkXF2MHSipDKF2caz85yondEgqrohxdPdpXRpiX2tkFzuY",  # bob
+        "edpkunwYWwaUUGPtbTGmggBB1dgmj5Ly8F9CwYHRL99XEDUgskgNBK",  # alice
+        "edpkvRCLKPFrg7eYXLsKLjjZqYnsVtoZdRtF4RyzLzRFMHsqFrxpFF",  # john
+        "edpktz9mUY7GeEbieZTsL2RwmA2GhwBd9YsYvRbnSFWnbb6pZX9aYH",  # jane
     ]
-    pubkeys[3] = ""
     
-    file_path = './output_files/zokrate-signature-input-ramon-50.json'
+    for _ in range(num_users - 4 ):
+        pubkeys.append("edpktz9mUY7GeEbieZTsL2RwmA2GhwBd9YsYvRbnSFWnbb6pZX9aYH")
 
-    with open(file_path, 'r') as file:
-        data = json.load(file) # 0, 1, 1000, 1 + i
-    
-    signatures = [
-        { # 1, 2, 1000, 2
-            "r": [
-                "12208776621866386368519600434257825921555383783020262696401561725161443218565",
-                "42099659853764012415077786415304351648740015586463863995849451685412124172850"
-            ],
-            "s": "2098404967612575486283620368662466401991716185579121887552944125596937539059",
-            "a": [
-                "9463778183056102078866993118044984671658132484107251542179921426381620273800",
-                "4635611125295530335317425380928224173124053237108412540578596412445271041431"
-            ]
-        }
-    ]
-    
-    signatures.extend(data)
-    
+    with open('./output_files/signatures.json') as json_file:
+        signatures = json.load(json_file)
+
     decoded_pubkeys = [decode_pubkey(x) for x in pubkeys]
     formatted_accounts = [byte32_to_u32_array8(x) for x in decoded_pubkeys]
-    account_root = calculate_tree_root(decoded_pubkeys)
+    # account_root = calculate_tree_root(decoded_pubkeys)
+    # account_root_poseidon = calculate_tree_root_zok(decoded_pubkeys)
+
+    account_root = "0x6E8CDB3BBFE39FCFD449C04BDC4AFFAFAA6077E8FFCFC0422F5AAFAD611ECFAD"
+    concatenatedBalancesNoncesTreeRoot = "0x6A56D5B1724AC1F57C15B0404532BA83A131748F637B6488974F93045612FCE9"
 
     # Generate balances and nonces
     balances = ["0x0" for _ in range(num_users)]
@@ -72,10 +63,10 @@ if __name__ == "__main__":
         }
         transaction_extras.append(transaction_extra)
 
-    concatenatedBalancesNonces = concatenate_two_arrays_in_256(
-        balances, nonces)
-    concatenatedBalancesNoncesTreeRoot = calculate_tree_root(
-        concatenatedBalancesNonces)
+    # concatenatedBalancesNonces = concatenate_two_arrays_in_256(
+    #     balances, nonces)
+    # concatenatedBalancesNoncesTreeRoot = calculate_tree_root(
+    #     concatenatedBalancesNonces)
 
     # Create and write to JSON file
     obj = json.dumps(
@@ -90,7 +81,7 @@ if __name__ == "__main__":
         ],
         indent=4,
     )
-    
+
     file_name = f"rollup-{num_users}-{num_transactions}-inputs.json"
 
     with open(f"output_files/{file_name}", "w") as outfile:

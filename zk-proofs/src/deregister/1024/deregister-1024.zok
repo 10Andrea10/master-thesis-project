@@ -1,0 +1,58 @@
+from "./../../lib/merkleTree" import generateMerkleTreePoseidon;
+from "./../../lib/hash" import hashCouplesArrays;
+from "./../../lib/types" import Signature;
+from "./../../lib/signature" import verifySignatureDeregister;
+
+const u32 TREE_DEPTH = 10;
+const u32 ACCOUNT_NUM = 1024;
+
+// This represents the public key of the account edpkuY4Le5Ps78zDSaHqJDuEa7HCbNEu6x5aD3fwiEHL3LR87bGer4
+// Used because it is not possible to have in the smart contract's big map an empty element with key type
+const u32[8] EMPTY_ACCOUNT = [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+];
+
+def main(field accountRoot, private u32[ACCOUNT_NUM][8] castedAccounts, field balancesNoncesRoot, private u32[ACCOUNT_NUM] balances, private u32[ACCOUNT_NUM] nonces, u32 position, private Signature signature) -> (field, field) {
+
+    // verify that the accounts are the right ones
+    field generatedAccountRoot = generateMerkleTreePoseidon(castedAccounts, TREE_DEPTH);
+    log("account root generated {}", generatedAccountRoot);
+    assert(accountRoot == generatedAccountRoot);
+
+    // verify that the balances + nonces inputed are the right ones
+    field[ACCOUNT_NUM] balancesNonces = hashCouplesArrays(balances, nonces);
+    field generatedBalancesNoncesRoot = generateMerkleTreePoseidon(balancesNonces, TREE_DEPTH);
+    log("balance + nonces root generated {}", generatedBalancesNoncesRoot);
+    assert(balancesNoncesRoot == generatedBalancesNoncesRoot);
+
+    bool sigVerified = verifySignatureDeregister(position, signature);
+    assert(sigVerified);
+
+    // verify that the account is drained from the balance
+    assert(balances[position] == 0);
+
+    // update the account keys
+    u32[ACCOUNT_NUM][8] mut newcastedAccounts = castedAccounts;
+    newcastedAccounts[position] = EMPTY_ACCOUNT;
+
+    // update balances and nonces
+    u32[ACCOUNT_NUM] mut newBalances = balances;
+    newBalances[position] = 0;
+    u32[ACCOUNT_NUM] mut newNonces = nonces;
+    newNonces[position] = 0;
+
+    field[ACCOUNT_NUM] newBalancesNonces = hashCouplesArrays(newBalances, newNonces);
+
+    field newBalancesNoncesRoot = generateMerkleTreePoseidon(newBalancesNonces, TREE_DEPTH);
+
+    field newAccountRoot = generateMerkleTreePoseidon(newcastedAccounts, TREE_DEPTH);
+
+    return (newAccountRoot, newBalancesNoncesRoot);
+}

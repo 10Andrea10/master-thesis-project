@@ -3,14 +3,10 @@
     {
       "name": "accountRoot",
       "public": true,
-      "type": "array",
-      "components": {
-        "size": 8,
-        "type": "u32"
-      }
+      "type": "field"
     },
     {
-      "name": "hashedAccounts",
+      "name": "castedAccounts",
       "public": false,
       "type": "array",
       "components": {
@@ -25,11 +21,7 @@
     {
       "name": "balancesNoncesRoot",
       "public": true,
-      "type": "array",
-      "components": {
-        "size": 8,
-        "type": "u32"
-      }
+      "type": "field"
     },
     {
       "name": "balances",
@@ -54,7 +46,7 @@
       "public": true,
       "type": "array",
       "components": {
-        "size": 30,
+        "size": 3,
         "type": "struct",
         "components": {
           "name": "Transaction",
@@ -85,7 +77,7 @@
       "public": false,
       "type": "array",
       "components": {
-        "size": 30,
+        "size": 3,
         "type": "struct",
         "components": {
           "name": "TransactionHelper",
@@ -147,11 +139,7 @@
     "components": {
       "elements": [
         {
-          "type": "array",
-          "components": {
-            "size": 8,
-            "type": "u32"
-          }
+          "type": "field"
         },
         {
           "type": "array",

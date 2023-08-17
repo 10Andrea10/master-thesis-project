@@ -331,15 +331,15 @@
     "plugins": [
         {
             "type": "npm",
-            "name": "@taqueria/plugin-flextesa"
-        },
-        {
-            "type": "npm",
             "name": "@taqueria/plugin-taquito"
         },
         {
             "type": "npm",
             "name": "@taqueria/plugin-smartpy"
+        },
+        {
+            "type": "npm",
+            "name": "@taqueria/plugin-flextesa"
         }
     ]
 }

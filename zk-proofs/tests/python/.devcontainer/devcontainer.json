@@ -28,7 +28,11 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "pip install pytezos && sudo apt update && sudo apt install python3-nacl -y",
+	"postCreateCommand": "pip install pytezos && sudo apt update && sudo apt install python3-nacl -y && curl -LSfs get.zokrat.es | sh && echo 'export ZOKRATES_STDLIB=/home/vscode/zokrates/zokrates_stdlib/stdlib' >> /home/vscode/.bashrc && echo 'export PATH=$PATH:/home/vscode/.zokrates/bin' >> /home/vscode/.bashrc",
+	"mounts": [
+		"source=/home/andrea/ZoKrates,target=/home/vscode/zokrates,type=bind"
+	]
+	
 
 
 	// Configure tool-specific properties.

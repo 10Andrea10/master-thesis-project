@@ -7,7 +7,7 @@ class ZKRollupContract(sp.Contract):
             last_rollup_timestamp = sp.timestamp_from_utc_now(),
             accounts =  map,
             mr_pub_key = {
-                0: sp.bls12_381_fr("0x78285C0A00000000000000000000000000000000000000000000000000000000"),
+                0: sp.bls12_381_fr("0x61e6b163ed46ca6bb227bf778950d31d22569904d7898331035124f553c5111e"),
                 1: sp.bls12_381_fr("0x8ECE7B9200000000000000000000000000000000000000000000000000000000"),
                 2: sp.bls12_381_fr("0x2890006E00000000000000000000000000000000000000000000000000000000"),
                 3: sp.bls12_381_fr("0x200A3A8300000000000000000000000000000000000000000000000000000000"),
@@ -197,7 +197,6 @@ class ZKRollupContract(sp.Contract):
         sp.set_type(params.account_index, sp.TNat)
         sp.set_type(params.account_public_key, sp.TKey)
         # Check sender is the user
-        sp.to_address(sp.implicit_account(sp.hash_key(params.account_public_key)))
         converted_address = sp.to_address(sp.implicit_account(sp.hash_key(params.account_public_key)))
         sp.if sp.sender != converted_address:
             sp.failwith("Sender is different from the sent public key")

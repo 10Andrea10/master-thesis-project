@@ -1,0 +1,39 @@
+
+const u32 ACCOUNT_NUM = 4;
+
+import "hashes/sha3/256bit" as hash;
+import "utils/casts/u8_to_bits" as u8_to_bits;
+import "utils/casts/u8_from_bits" as u8_from_bits;
+import "utils/casts/bool_array_to_u32_array" as bool_array_to_u32_array;
+import "utils/casts/bool_256_to_u32_8" as bool_256_to_u32_8;
+import "utils/casts/u32_to_bits" as u32_to_bits;
+import "utils/casts/u32_8_to_bool_256" as u32_8_to_bool_256;
+import "utils/casts/u32_array_to_bool_array" as u32_array_to_bool_array;
+
+def cast_32_u8_to_8_u32(u8[32] input) -> u32[8] {
+    bool[256] mut bits = [false; 256];
+    for u32 i in 0..32 {
+        bool[8] mut temp = u8_to_bits(input[i]);
+        for u32 j in 0..8 {
+            bits[i*8 + j] = temp[j];
+        }
+    }
+    return bool_256_to_u32_8(bits);
+}
+
+def main(u32[ACCOUNT_NUM] array1, u32[ACCOUNT_NUM] array2) -> u32[ACCOUNT_NUM][8] {
+    u32[ACCOUNT_NUM][8] mut result = [[0, 0, 0, 0, 0, 0, 0, 0]; ACCOUNT_NUM];
+    for u32 i in 0..ACCOUNT_NUM {
+        bool[32] a1_bool = u32_to_bits(array1[i]);
+        bool[32] a2_bool = u32_to_bits(array2[i]);
+        u8[4] mut a1_u8 = [0; 4];
+        u8[4] mut a2_u8 = [0; 4];
+        for u32 j in 0..4 {
+            a1_u8[j] = u8_from_bits(a1_bool[j*8..j*8+8]);
+            a2_u8[j] = u8_from_bits(a2_bool[j*8..j*8+8]);
+        }
+        u8[32] hashRes = hash([...a1_u8, ...a2_u8]);
+        result[i] = cast_32_u8_to_8_u32(hashRes);
+    }
+    return result;
+}

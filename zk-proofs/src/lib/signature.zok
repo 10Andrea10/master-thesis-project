@@ -1,9 +1,15 @@
-from "./hash" import hashTransaction;
+from "./hash" import hashTransactionPoseidon;
 from "./types" import Transaction, Signature;
 from "./verifier" import verifyEddsa;
+import "utils/pack/u32/unpack256_bls12_381" as unpack256_bls12_381;
 
 def verifySignatureTransaction(Transaction t, Signature s) -> bool {
-    (u32[8], u32[8]) m = hashTransaction(t);
-    return verifyEddsa(s.r, s.s, s.a, m.0, m.1);
+    field hash = hashTransactionPoseidon(t);
+    u32[8] first = unpack256_bls12_381(hash);
+    return verifyEddsa(s.r, s.s, s.a, first, [0; 8]);
+}
+
+def verifySignatureDeregister(u32 position, Signature s) -> bool {
+    return verifyEddsa(s.r, s.s, s.a, [position; 8], [0; 8]);
 }
 
