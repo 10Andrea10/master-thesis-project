@@ -5,7 +5,7 @@
       "public": true,
       "type": "array",
       "components": {
-        "size": 2048,
+        "size": 256,
         "type": "u32"
       }
     },
@@ -14,7 +14,7 @@
       "public": false,
       "type": "array",
       "components": {
-        "size": 2048,
+        "size": 256,
         "type": "u32"
       }
     }

@@ -2,7 +2,7 @@ import json
 from utils import decode_pubkey, byte32_to_u32_array8
 
 if __name__ == "__main__":
-    num_users = 2048
+    num_users = 256
 
     # Generate initial data
     pubkeys = [

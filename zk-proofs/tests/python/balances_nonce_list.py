@@ -1,7 +1,7 @@
 import json
 
 if __name__ == "__main__":
-    num_users = 2048
+    num_users = 256
 
     # Generate initial data
     balances = ["0x0" for _ in range(num_users)]

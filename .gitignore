@@ -23,6 +23,7 @@ verification.key
 out
 witness
 *.json
+!zk-proofs/tests/**/*.json
 
 
 # misc

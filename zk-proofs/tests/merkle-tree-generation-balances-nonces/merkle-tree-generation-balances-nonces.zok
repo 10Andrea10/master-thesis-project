@@ -1,9 +1,8 @@
 from "./../../src/lib/merkleTree" import generateMerkleTreePoseidon;
 from "./../../src/lib/hash" import hashCouplesArrays;
 
-const u32 TREE_DEPTH = 11;
-const u32 TRANSAC_NUM = 3;
-const u32 ACCOUNT_NUM = 2048;
+const u32 TREE_DEPTH = 8;
+const u32 ACCOUNT_NUM = 256;
 
 def main(u32[ACCOUNT_NUM] balances, private u32[ACCOUNT_NUM] nonces) -> field {
 

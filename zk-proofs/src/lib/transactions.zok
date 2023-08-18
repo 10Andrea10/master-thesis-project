@@ -1,5 +1,6 @@
 from "./types" import Transaction, TransactionHelper;
 from "./signature" import verifySignatureTransaction;
+from "./compression" import compressTransactionResult;
 
 def checkTransactions<N, M>(TransactionHelper[N] transactionExtras, u32[M][8] hashedAccounts, Transaction[N] transactions) -> bool {
     
@@ -44,4 +45,34 @@ def calculateNewBalancesAndNonces<N, M>(u32[M] balances, u32[M] nonces, Transact
     }
 
     return [newBalances, newNonces];
+}
+
+def calculateNewBalancesAndNoncesCompressed<N,M>(u32[M] balances, u32[M] nonces, Transaction[N] transactions, TransactionHelper[N] transactionExtras) -> (u32[M], u32[M], field[N]) {
+    u32[M] mut newBalances = balances;
+    u32[M] mut newNonces = nonces;
+
+    field[N] mut diffsCompressed = [0; N];
+
+    for u32 i in 0..N {
+        Transaction transaction = transactions[i];
+        TransactionHelper transactionHelper = transactionExtras[i];
+
+        // check that the sender balance is sufficient
+        assert(newBalances[transaction.sourceIndex] >= transaction.amount);
+
+        // update balances
+        newBalances[transaction.sourceIndex] = newBalances[transaction.sourceIndex] - transaction.amount;
+        newBalances[transaction.targetIndex] = newBalances[transaction.targetIndex] + transaction.amount;
+
+        // check that nonce is the expected one
+        assert(transaction.nonce == (newNonces[transaction.sourceIndex]) + 1);
+
+        // increment the nonce array
+        newNonces[transaction.sourceIndex] = transaction.nonce;
+
+        diffsCompressed[i] = compressTransactionResult(transaction.sourceIndex, newBalances[transaction.sourceIndex], newNonces[transaction.sourceIndex], transaction.targetIndex, newBalances[transaction.targetIndex]);
+
+    }
+
+    return (newBalances, newNonces, diffsCompressed);
 }

@@ -1,0 +1,20 @@
+import "utils/casts/u32_to_bits.zok" as u32_to_bits;
+import "utils/pack/bool/pack.zok" as pack;
+
+def compressTransactionResult(u32 index_1, u32 balance_1, u32 nonce_1, u32 index_2, u32 balance_2) -> field {
+    bool[32] index_bits_1 = u32_to_bits(index_1);
+    bool[32] balance_bits_1 = u32_to_bits(balance_1);
+    bool[32] nonce_bits_1 = u32_to_bits(nonce_1);
+
+    bool[32] index_bits_2 = u32_to_bits(index_2);
+    bool[32] balance_bits_2 = u32_to_bits(balance_2);
+
+    bool[254] joint = [
+        ...index_bits_1, ...balance_bits_1, ...nonce_bits_1,
+        ...[false; 94],
+        ...index_bits_2, ...balance_bits_2
+    ];
+    
+    field res = pack(joint);
+    return res;
+}

@@ -2,8 +2,8 @@ import json
 from utils import decode_pubkey, byte32_to_u32_array8
 
 if __name__ == "__main__":
-    num_users = 2048
-    num_transactions = 3
+    num_users = 1024
+    num_transactions = 30
 
     # Generate initial data
     pubkeys = [
@@ -24,8 +24,8 @@ if __name__ == "__main__":
     # account_root = calculate_tree_root(decoded_pubkeys)
     # account_root_poseidon = calculate_tree_root_zok(decoded_pubkeys)
 
-    account_root = "0x6E8CDB3BBFE39FCFD449C04BDC4AFFAFAA6077E8FFCFC0422F5AAFAD611ECFAD"
-    concatenatedBalancesNoncesTreeRoot = "0x6A56D5B1724AC1F57C15B0404532BA83A131748F637B6488974F93045612FCE9"
+    account_root = "0x1A15C44FECD537A054901284CF219E49253A9F8F40BB2B8A6E9D82353DD9EC5"
+    concatenatedBalancesNoncesTreeRoot = "0x466851B8A10959D499E7D0046F02E90B14A919E1CF6219F839FF620EC4E962DE"
 
     # Generate balances and nonces
     balances = ["0x0" for _ in range(num_users)]
