@@ -3,7 +3,7 @@ from utils import decode_pubkey, byte32_to_u32_array8
 
 if __name__ == "__main__":
     num_users = 128
-    num_transactions = 30
+    num_transactions = 55
 
     # Generate initial data
     pubkeys = [
